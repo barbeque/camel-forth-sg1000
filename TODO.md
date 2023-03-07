@@ -1,0 +1,6 @@
+ - [ ] Reset vector
+ - [ ] Emit, Key, Key?
+ - [ ] Hardware initializing
+ - [ ] Enddict -> starting ram address
+ - [ ] Input buffer to new location
+ - [ ] Delete TAIL definition
