@@ -23,7 +23,7 @@
 ; or via email to bj@camelforth.com
 ;
 ; ===============================================
-; CAMEL80.AZM: Code Primitives
+; CAMEL80.ASM: Code Primitives
 ;   Source code is for the Z80MR macro assembler.
 ;   Forth words are documented as follows:
 ;x   NAME     stack -- stack    description
@@ -106,8 +106,11 @@ nexthl  MACRO
         ENDM
 
 ; RESET AND INTERRUPT VECTORS ===================
-; ...are not used in the CP/M implementation
-; Instead, we have the...
+_entry:
+        org 0h
+        jp reset
+
+; TODO: Interrupts, etc go here
 
 ; CP/M ENTRY POINT
         org 100h
@@ -1036,8 +1039,8 @@ sdiff:  ; mismatch!  undo last 'cpi' increment
         ld c,a
 snext:  next
 
-#include "camel80d.azm"   ; CPU Dependencies
-#include "camel80h.azm"   ; High Level words
+#include "camel80d.asm"   ; CPU Dependencies
+#include "camel80h.asm"   ; High Level words
 
 lastword EQU link   ; nfa of last word in dict.
 enddict SG1000_RAM_BOTTOM ; user's code starts here

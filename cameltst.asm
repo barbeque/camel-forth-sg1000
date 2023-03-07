@@ -14,7 +14,7 @@
 ; for testing the rest of the Core wordset.
 ;
 ; The required macros and CPU initialization
-; are in file CAMEL80.AZM.
+; are in file CAMEL80.ASM.
 ; ===============================================
 
 ;Z ><   u1 -- u2    swap the bytes of TOS

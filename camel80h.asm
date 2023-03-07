@@ -22,7 +22,7 @@
 ; or via email to bj@camelforth.com
 ;
 ; ===============================================
-; CAMEL80H.AZM: High Level Words
+; CAMEL80H.ASM: High Level Words
 ;   Source code is for the Z80MR macro assembler.
 ;   Forth words are documented as follows:
 ;*   NAME     stack -- stack    description

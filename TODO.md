@@ -1,4 +1,5 @@
  - [ ] Reset vector
+ - [ ] Test program for Emit scrolling
  - [ ] Emit, Key, Key?
  - [ ] Hardware initializing
 	- [ ] Identify Soggy-1000 (check for 8k of RAM)

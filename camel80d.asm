@@ -22,7 +22,7 @@
 ; or via email to bj@camelforth.com
 ;
 ; ===============================================
-; CAMEL80D.AZM: CPU and Model Dependencies
+; CAMEL80D.ASM: CPU and Model Dependencies
 ;   Source code is for the Z80MR macro assembler.
 ;   Forth words are documented as follows:
 ;*   NAME     stack -- stack    description
