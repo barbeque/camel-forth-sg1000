@@ -1,4 +1,4 @@
-#include "sg1000-defines.asm"
+#include "shared/model_macros.asm"
 
 ; Listing 2.
 ; ===============================================
@@ -116,15 +116,39 @@ _entry:
         org 100h
 
         ; TODO:
-        ; - Identify model in use (SG-1000? Soggy?)
-        ; - Find top of memory and initialize stack pointer
-        ; - Mute PSG
-        ; - Set up VDP memory
-        ; - Load font into VDP memory
-        ; - Turn on VDP
+        ; [x] Identify model in use (SG-1000? Soggy? Cartridge?)
+        ; [x] Find top of memory and initialize stack pointer
+        ; [ ] Set paging if Soggy
+        ; [ ] Mute PSG
+        ; [ ] Set up VDP memory
+        ; [ ] Load font into VDP memory
+        ; [ ] Turn on VDP
 
-reset:  ld hl,(6h)   ; BDOS address, rounded down
-        ld l,0       ;    = end of avail.mem (EM)
+reset:
+        ; Identify model and set stack pointer and memory
+        is_soggy_v3
+        cp a, $ff
+        jr z, _init_ram_top_for_soggy
+        is_sc3000
+        cp a, $ff
+        jr z, _init_ram_top_for_sc3000
+        ld hl, SEGA_SG1000_RAM_TOP
+        jr _after_top_found
+
+_init_ram_top_for_soggy:
+        ; set second 8k to page 2, providing contiguous 16k
+        set_soggy_page_register $01
+
+        ld hl, SOGGY_V3_RAM_TOP
+        jr _after_top_found
+
+_init_ram_top_for_sc3000:
+        ld hl, SEGA_SC3000_RAM_TOP
+        jr _after_top_found
+
+_after_top_found:
+        ; hl = end of avail.mem (EM)
+        ; TODO: Fix this next bit because I mangled it
         dec h        ; EM-100h
         ld sp,hl     ;      = top of param stack
         inc h        ; EM
