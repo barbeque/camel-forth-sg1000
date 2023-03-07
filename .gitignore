@@ -1,3 +1,5 @@
 *.lst
 *.sg
 *.bin
+# Linked from my main repo
+shared
