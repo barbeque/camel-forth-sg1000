@@ -106,14 +106,23 @@ nexthl  MACRO
         ENDM
 
 ; RESET AND INTERRUPT VECTORS ===================
-_entry:
         org 0h
+_entry:
         jp reset
 
 ; TODO: Interrupts, etc go here
 
-; CP/M ENTRY POINT
+; old CP/M ENTRY POINT
         org 100h
+
+        ; TODO:
+        ; - Identify model in use (SG-1000? Soggy?)
+        ; - Find top of memory and initialize stack pointer
+        ; - Mute PSG
+        ; - Set up VDP memory
+        ; - Load font into VDP memory
+        ; - Turn on VDP
+
 reset:  ld hl,(6h)   ; BDOS address, rounded down
         ld l,0       ;    = end of avail.mem (EM)
         dec h        ; EM-100h
