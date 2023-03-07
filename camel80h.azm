@@ -1016,7 +1016,8 @@ DOTS2:  DW EXIT
 ;   ABORT ;
     head COLD,4,COLD,docolon
         DW UINIT,U0,NINIT,CMOVE
-        DW LIT,80h,COUNT,INTERPRET
+        -- SG1000: Removed as part of SG-1000 port, Mar 2023.
+        -- DW LIT,80h,COUNT,INTERPRET
         DW XSQUOTE
         DB 35,'Z80 CamelForth v1.01  25 Jan 1995'
         DB 0dh,0ah

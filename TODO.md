@@ -3,4 +3,4 @@
  - [ ] Hardware initializing
  - [ ] Enddict -> starting ram address
  - [ ] Input buffer to new location
- - [ ] Delete TAIL definition
+ - [x] Delete TAIL definition
