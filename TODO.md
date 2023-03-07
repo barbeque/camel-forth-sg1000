@@ -1,6 +1,8 @@
  - [ ] Reset vector
  - [ ] Emit, Key, Key?
  - [ ] Hardware initializing
- - [ ] Enddict -> starting ram address
+	- [ ] Identify Soggy-1000 (check for 8k of RAM)
+	- [ ] Set Soggy-1000 paging, stack pointer
+ - [x] Enddict -> starting ram address
  - [ ] Input buffer to new location
  - [x] Delete TAIL definition
