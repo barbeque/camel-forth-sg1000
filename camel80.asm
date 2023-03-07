@@ -117,9 +117,10 @@ _entry:
 
         ; TODO:
         ; [x] Identify model in use (SG-1000? Soggy? Cartridge?)
-        ; [x] Find top of memory and initialize stack pointer
-        ; [ ] Set paging if Soggy
-        ; [ ] Mute PSG
+        ; [x] Find top of memory
+        ; [x] Set paging if Soggy
+        ; [ ] initialize stack pointer
+        ; [x] Mute PSG
         ; [ ] Set up VDP memory
         ; [ ] Load font into VDP memory
         ; [ ] Turn on VDP
@@ -158,6 +159,9 @@ _after_top_found:
         dec h
         push hl
         pop iy       ;      = bottom of user area
+
+        call MutePSG
+
         ld de,1      ; do reset if COLD returns
         jp COLD      ; enter top-level Forth word
 
