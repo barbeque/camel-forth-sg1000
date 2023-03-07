@@ -1,5 +1,14 @@
 #include "shared/model_macros.asm"
 
+; RAM
+#target rom
+#data DATA, SG1000_RAM_BASE, *
+
+; Tells us where our system RAM area ends.
+; Don't define any variables past here.
+END_OF_SYSTEM_RAM defs 1
+
+#code ROM, $0000, *
 ; Listing 2.
 ; ===============================================
 ; CamelForth for the Zilog Z80
@@ -1080,6 +1089,6 @@ snext:  next
 #include "camel80h.asm"   ; High Level words
 
 lastword EQU link   ; nfa of last word in dict.
-enddict SG1000_RAM_BOTTOM ; user's code starts here
+enddict END_OF_SYSTEM_RAM ; user's code starts here
         END
 
