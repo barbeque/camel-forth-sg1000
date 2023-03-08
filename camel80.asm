@@ -173,7 +173,12 @@ _after_top_found:
         push hl         
         pop iy       ; IY = bottom of user area (EM-200h)
 
+        ; Squelch the noise from the SN76489AN
         call MutePSG
+
+        ; Set up VDP and install a font
+        call ScreenInit
+        call DefineFont
 
         ld de,1      ; do reset if COLD returns
         jp COLD      ; enter top-level Forth word
