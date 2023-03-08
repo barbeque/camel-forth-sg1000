@@ -2,8 +2,10 @@
  - [ ] Test program for Emit scrolling
  - [ ] Emit, Key, Key?
  - [ ] Hardware initializing
-	- [ ] Identify Soggy-1000 (check for 8k of RAM)
-	- [ ] Set Soggy-1000 paging, stack pointer
+	- [x] Identify Soggy-1000 (check for 8k of RAM)
+	- [ ] Set Soggy-1000 paging
+	- [ ] Set stack pointer (what are they trying to do?)
+	- [ ] If Soggy identified, print console message
  - [x] Enddict -> starting ram address
  - [ ] Input buffer to new location
  - [x] Delete TAIL definition

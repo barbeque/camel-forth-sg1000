@@ -4,6 +4,10 @@
 #target rom
 #data DATA, SG1000_RAM_BASE, *
 
+; The location in nametable memory we are
+; about to insert the next character into.
+INSERTION_POINT defs 1
+
 ; Tells us where our system RAM area ends.
 ; Don't define any variables past here.
 END_OF_SYSTEM_RAM defs 1
@@ -128,7 +132,7 @@ _entry:
         ; [x] Identify model in use (SG-1000? Soggy? Cartridge?)
         ; [x] Find top of memory
         ; [x] Set paging if Soggy
-        ; [ ] initialize stack pointer
+        ; [x] initialize stack pointer
         ; [x] Mute PSG
         ; [ ] Set up VDP memory
         ; [ ] Load font into VDP memory
@@ -158,16 +162,16 @@ _init_ram_top_for_sc3000:
 
 _after_top_found:
         ; hl = end of avail.mem (EM)
-        ; TODO: Fix this next bit because I mangled it
-        dec h        ; EM-100h
+        ld l, 0      ; Round to $FF00, $C300 or whatever
+        dec h        ; HL = end of memory - $100 ($FE00)
         ld sp,hl     ;      = top of param stack
-        inc h        ; EM
+        inc h        ; HL = EM
         push hl
-        pop ix       ;      = top of return stack
-        dec h        ; EM-200h
-        dec h
-        push hl
-        pop iy       ;      = bottom of user area
+        pop ix       ; IX = top of return stack (EM)
+        dec h        ; HL = EM-100h
+        dec h        ; HL = EM-200h
+        push hl         
+        pop iy       ; IY = bottom of user area (EM-200h)
 
         call MutePSG
 
