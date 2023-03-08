@@ -180,6 +180,11 @@ _after_top_found:
         call ScreenInit
         call DefineFont
 
+        ; Reset global memory values
+        ld a, 0
+        ld (INSERTION_POINT), a
+
+        ; ...return to your regularly scheduled CamelForth-80
         ld de,1      ; do reset if COLD returns
         jp COLD      ; enter top-level Forth word
 
