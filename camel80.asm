@@ -1,4 +1,5 @@
 #include "shared/model_macros.asm"
+#include "shared/vdp_macros.asm"
 
 ; RAM
 #target rom
@@ -80,9 +81,42 @@ head    MACRO   #label,#length,#name,#action
 link    DEFL $
         DB #length,'#name'
 #label:
-        IF  .NOT.(#action=DOCODE)
+        ;IF  .NOT.(#action=DOCODE)
         call #action
-        ENDIF
+        ;ENDIF
+        ENDM
+
+; header definition for a word with special characters in
+; it (like S") and won't attempt to wrap the name in a string
+rhead    MACRO   #label,#length,#name,#action
+        DW link
+        DB 0
+link    DEFL $
+        DB #length, #name
+#label:
+        ;IF  .NOT.(#action=DOCODE)
+        call #action
+        ;ENDIF
+        ENDM
+
+; header definition for a 'docode' word
+chead   MACRO   #label,#length,#name
+        DW link
+        DB 0
+link    DEFL $
+        DB #length,'#name'
+#label:
+        ; docode doesn't call anyone
+        ENDM
+
+; Raw version of chead that expects 'name' to be a pre-quoted string
+rchead   MACRO   #label,#length,#name
+        DW link
+        DB 0
+link    DEFL $
+        DB #length,#name
+#label:
+        ; docode doesn't call anyone
         ENDM
 
 immed   MACRO   #label,#length,#name,#action
@@ -91,9 +125,31 @@ immed   MACRO   #label,#length,#name,#action
 link    DEFL $
         DB #length,'#name'
 #label:
-        IF  .NOT.(#action=DOCODE)
+        ;IF  .NOT.(#action=DOCODE)
         call #action
-        ENDIF
+        ;ENDIF
+        ENDM
+
+; Same as rhead, but for immed
+rimmed   MACRO   #label,#length,#name,#action
+        DW link
+        DB 1
+link    DEFL $
+        DB #length,#name
+#label:
+        ;IF  .NOT.(#action=DOCODE)
+        call #action
+        ;ENDIF
+        ENDM
+
+; Same as chead, but for immediate words
+cimmed   MACRO   #label,#length,#name
+        DW link
+        DB 1
+link    DEFL $
+        DB #length,'#name'
+#label:
+        ; docode doesn't call anyone
         ENDM
 
 ; The NEXT macro (7 bytes) assembles the 'next'
@@ -126,7 +182,7 @@ _entry:
 ; TODO: Interrupts, etc go here
 
 ; old CP/M ENTRY POINT
-        org 100h
+        ;org 100h
 
         ; TODO:
         ; [x] Identify model in use (SG-1000? Soggy? Cartridge?)
@@ -134,9 +190,14 @@ _entry:
         ; [x] Set paging if Soggy
         ; [x] initialize stack pointer
         ; [x] Mute PSG
-        ; [ ] Set up VDP memory
-        ; [ ] Load font into VDP memory
-        ; [ ] Turn on VDP
+        ; [x] Set up VDP memory
+        ; [x] Load font into VDP memory
+        ; [x] Turn on VDP
+
+; Big blobs of code here
+#include "shared/font_8x8.asm"
+#include "shared/psg.asm"
+#include "shared/vdp.asm"
 
 reset:
         ; Identify model and set stack pointer and memory
@@ -207,7 +268,7 @@ _after_top_found:
 ; See also "defining words" at end of this file
 
 ;C EXIT     --      exit a colon definition
-    head EXIT,4,EXIT,docode
+    chead EXIT,4,EXIT
         ld e,(ix+0)    ; pop old IP from ret stk
         inc ix
         ld d,(ix+0)
@@ -215,8 +276,8 @@ _after_top_found:
         next
 
 ;Z lit      -- x    fetch inline literal to stack
-; This is the primtive compiled by LITERAL.
-    head lit,3,lit,docode
+; This is the primitive compiled by LITERAL.
+    chead lit,3,lit
         push bc        ; push old TOS
         ld a,(de)      ; fetch cell at IP to TOS,
         ld c,a         ;        advancing IP
@@ -228,7 +289,7 @@ _after_top_found:
 
 ;C EXECUTE   i*x xt -- j*x   execute Forth word
 ;C                           at 'xt'
-    head EXECUTE,7,EXECUTE,docode
+    chead EXECUTE,7,EXECUTE
         ld h,b          ; address of word -> HL
         ld l,c
         pop bc          ; get new TOS
@@ -323,7 +384,7 @@ dodoes: ; -- a-addr
 cpmbdos EQU 5h          ; CP/M BDOS entry point
 
 ;Z BDOS   de c -- a   call CP/M BDOS
-    head BDOS,4,BDOS,docode
+    chead BDOS,4,BDOS
         ex de,hl    ; save important Forth regs
         pop de      ;  (DE,IX,IY) & pop DE value
         push hl
@@ -377,30 +438,30 @@ KEY2:   DW SAVEKEY,CFETCH,LIT,0,SAVEKEY,CSTORE
         DW ONEPLUS,CFETCH,LIT,0Ah,EMIT,EXIT
 
 ;X BYE     i*x --    return to CP/M
-    head bye,3,bye,docode
+    chead bye,3,bye
         jp 0
 
 ; STACK OPERATIONS ==============================
 
 ;C DUP      x -- x x      duplicate top of stack
-    head DUP,3,DUP,docode
+    chead DUP,3,DUP
 pushtos: push bc
         next
 
 ;C ?DUP     x -- 0 | x x    DUP if nonzero
-    head QDUP,4,?DUP,docode
+    chead QDUP,4,?DUP
         ld a,b
         or c
         jr nz,pushtos
         next
 
 ;C DROP     x --          drop top of stack
-    head DROP,4,DROP,docode
+    chead DROP,4,DROP
 poptos: pop bc
         next
 
 ;C SWAP     x1 x2 -- x2 x1    swap top two items
-    head SWOP,4,SWAP,docode
+    chead SWOP,4,SWAP
         pop hl
         push bc
         ld b,h
@@ -408,7 +469,7 @@ poptos: pop bc
         next
 
 ;C OVER    x1 x2 -- x1 x2 x1   per stack diagram
-    head OVER,4,OVER,docode
+    chead OVER,4,OVER
         pop hl
         push hl
         push bc
@@ -417,7 +478,7 @@ poptos: pop bc
         next
 
 ;C ROT    x1 x2 x3 -- x2 x3 x1  per stack diagram
-    head ROT,3,ROT,docode
+    chead ROT,3,ROT
         ; x3 is in TOS
         pop hl          ; x2
         ex (sp),hl      ; x2 on stack, x1 in hl
@@ -435,7 +496,7 @@ poptos: pop bc
         DW SWOP,OVER,EXIT
 
 ;C >R    x --   R: -- x   push to return stack
-    head TOR,2,>R,docode
+    chead TOR,2,>R
         dec ix          ; push TOS onto rtn stk
         ld (ix+0),b
         dec ix
@@ -444,7 +505,7 @@ poptos: pop bc
         next
 
 ;C R>    -- x    R: x --   pop from return stack
-    head RFROM,2,R>,docode
+    chead RFROM,2,R>
         push bc         ; push old TOS
         ld c,(ix+0)     ; pop top rtn stk item
         inc ix          ;       to TOS
@@ -453,14 +514,14 @@ poptos: pop bc
         next
 
 ;C R@    -- x     R: x -- x   fetch from rtn stk
-    head RFETCH,2,R@,docode
+    chead RFETCH,2,R@
         push bc         ; push old TOS
         ld c,(ix+0)     ; fetch top rtn stk item
         ld b,(ix+1)     ;       to TOS
         next
 
 ;Z SP@  -- a-addr       get data stack pointer
-    head SPFETCH,3,SP@,docode
+    chead SPFETCH,3,SP@
         push bc
         ld hl,0
         add hl,sp
@@ -469,7 +530,7 @@ poptos: pop bc
         next
 
 ;Z SP!  a-addr --       set data stack pointer
-    head SPSTORE,3,SP!,docode
+    chead SPSTORE,3,SP!
         ld h,b
         ld l,c
         ld sp,hl
@@ -477,14 +538,14 @@ poptos: pop bc
         next
 
 ;Z RP@  -- a-addr       get return stack pointer
-    head RPFETCH,3,RP@,docode
+    chead RPFETCH,3,RP@
         push bc
         push ix
         pop bc
         next
 
 ;Z RP!  a-addr --       set return stack pointer
-    head RPSTORE,3,RP!,docode
+    chead RPSTORE,3,RP!
         push bc
         pop ix
         pop bc
@@ -493,7 +554,7 @@ poptos: pop bc
 ; MEMORY AND I/O OPERATIONS =====================
 
 ;C !        x a-addr --   store cell in memory
-    head STORE,1,!,docode
+    chead STORE,1,!
         ld h,b          ; address in hl
         ld l,c
         pop bc          ; data in bc
@@ -504,7 +565,7 @@ poptos: pop bc
         next
 
 ;C C!      char c-addr --    store char in memory
-    head CSTORE,2,C!,docode
+    chead CSTORE,2,C!
         ld h,b          ; address in hl
         ld l,c
         pop bc          ; data in bc
@@ -513,7 +574,7 @@ poptos: pop bc
         next
 
 ;C @       a-addr -- x   fetch cell from memory
-    head FETCH,1,@,docode
+    chead FETCH,1,@
         ld h,b          ; address in hl
         ld l,c
         ld c,(hl)
@@ -522,21 +583,21 @@ poptos: pop bc
         next
 
 ;C C@     c-addr -- char   fetch char from memory
-    head CFETCH,2,C@,docode
+    chead CFETCH,2,C@
         ld a,(bc)
         ld c,a
         ld b,0
         next
 
 ;Z PC!     char c-addr --    output char to port
-    head PCSTORE,3,PC!,docode
+    chead PCSTORE,3,PC!
         pop hl          ; char in L
         out (c),l       ; to port (BC)
         pop bc          ; pop new TOS
         next
 
 ;Z PC@     c-addr -- char   input char from port
-    head PCFETCH,3,PC@,docode
+    chead PCFETCH,3,PC@
         in c,(c)        ; read port (BC) to C
         ld b,0
         next
@@ -544,7 +605,7 @@ poptos: pop bc
 ; ARITHMETIC AND LOGICAL OPERATIONS =============
 
 ;C +       n1/u1 n2/u2 -- n3/u3     add n1+n2
-    head PLUS,1,+,docode
+    chead PLUS,1,+
         pop hl
         add hl,bc
         ld b,h
@@ -552,7 +613,7 @@ poptos: pop bc
         next
 
 ;X M+       d n -- d         add single to double
-    head MPLUS,2,M+,docode
+    chead MPLUS,2,M+
         ex de,hl
         pop de          ; hi cell
         ex (sp),hl      ; lo cell, save IP
@@ -566,7 +627,7 @@ mplus1: pop de          ; restore saved IP
         next
 
 ;C -      n1/u1 n2/u2 -- n3/u3    subtract n1-n2
-    head MINUS,1,-,docode
+    chead MINUS,1,-
         pop hl
         or a
         sbc hl,bc
@@ -575,7 +636,7 @@ mplus1: pop de          ; restore saved IP
         next
 
 ;C AND    x1 x2 -- x3            logical AND
-    head AND,3,AND,docode
+    chead AND,3,AND
         pop hl
         ld a,b
         and h
@@ -586,7 +647,7 @@ mplus1: pop de          ; restore saved IP
         next
 
 ;C OR     x1 x2 -- x3           logical OR
-    head OR,2,OR,docode
+    chead OR,2,OR
         pop hl
         ld a,b
         or h
@@ -597,7 +658,7 @@ mplus1: pop de          ; restore saved IP
         next
 
 ;C XOR    x1 x2 -- x3            logical XOR
-    head XOR,3,XOR,docode
+    chead XOR,3,XOR
         pop hl
         ld a,b
         xor h
@@ -608,7 +669,7 @@ mplus1: pop de          ; restore saved IP
         next
 
 ;C INVERT   x1 -- x2            bitwise inversion
-    head INVERT,6,INVERT,docode
+    chead INVERT,6,INVERT
         ld a,b
         cpl
         ld b,a
@@ -618,7 +679,7 @@ mplus1: pop de          ; restore saved IP
         next
 
 ;C NEGATE   x1 -- x2            two's complement
-    head NEGATE,6,NEGATE,docode
+    chead NEGATE,6,NEGATE
         ld a,b
         cpl
         ld b,a
@@ -629,36 +690,36 @@ mplus1: pop de          ; restore saved IP
         next
 
 ;C 1+      n1/u1 -- n2/u2       add 1 to TOS
-    head ONEPLUS,2,1+,docode
+    chead ONEPLUS,2,1+
         inc bc
         next
 
 ;C 1-      n1/u1 -- n2/u2     subtract 1 from TOS
-    head ONEMINUS,2,1-,docode
+    chead ONEMINUS,2,1-
         dec bc
         next
 
 ;Z ><      x1 -- x2         swap bytes (not ANSI)
-    head swapbytes,2,><,docode
+    chead swapbytes,2,\>\<
         ld a,b
         ld b,c
         ld c,a
         next
 
 ;C 2*      x1 -- x2         arithmetic left shift
-    head TWOSTAR,2,2*,docode
+    chead TWOSTAR,2,2*
         sla c
         rl b
         next
 
 ;C 2/      x1 -- x2        arithmetic right shift
-    head TWOSLASH,2,2/,docode
+    chead TWOSLASH,2,2/
         sra b
         rr c
         next
 
 ;C LSHIFT  x1 u -- x2    logical L shift u places
-    head LSHIFT,6,LSHIFT,docode
+    chead LSHIFT,6,LSHIFT
         ld b,c        ; b = loop counter
         pop hl        ;   NB: hi 8 bits ignored!
         inc b         ; test for counter=0 case
@@ -670,7 +731,7 @@ lsh2:   djnz lsh1
         next
 
 ;C RSHIFT  x1 u -- x2    logical R shift u places
-    head RSHIFT,6,RSHIFT,docode
+    chead RSHIFT,6,RSHIFT
         ld b,c        ; b = loop counter
         pop hl        ;   NB: hi 8 bits ignored!
         inc b         ; test for counter=0 case
@@ -683,7 +744,7 @@ rsh2:   djnz rsh1
         next
 
 ;C +!     n/u a-addr --       add cell to memory
-    head PLUSSTORE,2,+!,docode
+    chead PLUSSTORE,2,+!
         pop hl
         ld a,(bc)       ; low byte
         add a,l
@@ -698,7 +759,7 @@ rsh2:   djnz rsh1
 ; COMPARISON OPERATIONS =========================
 
 ;C 0=     n/u -- flag    return true if TOS=0
-    head ZEROEQUAL,2,0=,docode
+    chead ZEROEQUAL,2,0=
         ld a,b
         or c            ; result=0 if bc was 0
         sub 1           ; cy set   if bc was 0
@@ -708,7 +769,7 @@ rsh2:   djnz rsh1
         next
 
 ;C 0<     n -- flag      true if TOS negative
-    head ZEROLESS,2,0<,docode
+    chead ZEROLESS,2,0\<
         sla b           ; sign bit -> cy flag
         sbc a,a         ; propagate cy through A
         ld b,a          ; put 0000 or FFFF in TOS
@@ -716,7 +777,7 @@ rsh2:   djnz rsh1
         next
 
 ;C =      x1 x2 -- flag         test x1=x2
-    head EQUAL,1,=,docode
+    chead EQUAL,1,=
         pop hl
         or a
         sbc hl,bc       ; x1-x2 in HL, SZVC valid
@@ -725,11 +786,11 @@ tosfalse: ld bc,0
         next
 
 ;X <>     x1 x2 -- flag    test not eq (not ANSI)
-    head NOTEQUAL,2,<>,docolon
+    head NOTEQUAL,2,\<\>,docolon
         DW EQUAL,ZEROEQUAL,EXIT
 
 ;C <      n1 n2 -- flag        test n1<n2, signed
-    head LESS,1,<,docode
+    chead LESS,1,\<
         pop hl
         or a
         sbc hl,bc       ; n1-n2 in HL, SZVC valid
@@ -750,7 +811,7 @@ revsense: jp m,tosfalse ; OV: if -ve, reslt false
         DW SWOP,LESS,EXIT
 
 ;C U<    u1 u2 -- flag       test u1<n2, unsigned
-    head ULESS,2,U<,docode
+    chead ULESS,2,U\<
         pop hl
         or a
         sbc hl,bc       ; u1-u2 in HL, SZVC valid
@@ -766,7 +827,7 @@ revsense: jp m,tosfalse ; OV: if -ve, reslt false
 ; LOOP AND BRANCH OPERATIONS ====================
 
 ;Z branch   --                  branch always
-    head branch,6,branch,docode
+    chead branch,6,branch
 dobranch: ld a,(de)     ; get inline value => IP
         ld l,a
         inc de
@@ -775,7 +836,7 @@ dobranch: ld a,(de)     ; get inline value => IP
         nexthl
 
 ;Z ?branch   x --              branch if TOS zero
-    head qbranch,7,?branch,docode
+    chead qbranch,7,?branch
         ld a,b
         or c            ; test old TOS
         pop bc          ; pop new TOS
@@ -794,7 +855,7 @@ dobranch: ld a,(de)     ; get inline value => IP
 ; I learned this trick from Laxen & Perry F83.
 ; fudge factor = 8000h-limit, to be added to
 ; the start value.
-    head xdo,4,(do),docode
+    chead xdo,4,(do)
         ex de,hl
         ex (sp),hl   ; IP on stack, limit in HL
         ex de,hl
@@ -820,7 +881,7 @@ dobranch: ld a,(de)     ; get inline value => IP
 ; clean up the return stack and skip the branch.
 ; Else take the inline branch.  Note that LOOP
 ; terminates when index=8000h.
-    head xloop,6,(loop),docode
+    chead xloop,6,(loop)
         exx
         ld bc,1
 looptst: ld l,(ix+0)  ; get the loop index
@@ -846,7 +907,7 @@ loopterm: ; terminate the loop
 ; Add n to the loop index.  If loop terminates,
 ; clean up the return stack and skip the branch.
 ; Else take the inline branch.
-    head xplusloop,7,(+loop),docode
+    chead xplusloop,7,(+loop)
         pop hl      ; this will be the new TOS
         push bc
         ld b,h
@@ -857,7 +918,7 @@ loopterm: ; terminate the loop
 
 ;C I        -- n   R: sys1 sys2 -- sys1 sys2
 ;C                  get the innermost loop index
-    head II,1,I,docode
+    chead II,1,I
         push bc     ; push old TOS
         ld l,(ix+0) ; get current loop index
         ld h,(ix+1)
@@ -871,7 +932,7 @@ loopterm: ; terminate the loop
 
 ;C J        -- n   R: 4*sys -- 4*sys
 ;C                  get the second loop index
-    head JJ,1,J,docode
+    chead JJ,1,J
         push bc     ; push old TOS
         ld l,(ix+4) ; get current loop index
         ld h,(ix+5)
@@ -884,7 +945,7 @@ loopterm: ; terminate the loop
         next
 
 ;C UNLOOP   --   R: sys1 sys2 --  drop loop parms
-    head UNLOOP,6,UNLOOP,docode
+    chead UNLOOP,6,UNLOOP
         inc ix
         inc ix
         inc ix
@@ -894,7 +955,7 @@ loopterm: ; terminate the loop
 ; MULTIPLY AND DIVIDE ===========================
 
 ;C UM*     u1 u2 -- ud   unsigned 16x16->32 mult.
-    head UMSTAR,3,UM*,docode
+    chead UMSTAR,3,UM*
         push bc
         exx
         pop bc      ; u2 in BC
@@ -917,7 +978,7 @@ noadd:  dec a
         next
 
 ;C UM/MOD   ud u1 -- u2 u3   unsigned 32/16->16
-    head UMSLASHMOD,6,UM/MOD,docode
+    chead UMSLASHMOD,6,UM/MOD
         push bc
         exx
         pop bc      ; BC = divisor
@@ -959,7 +1020,7 @@ udiv4:  rl e        ; rotate result bit into DE,
 ; BLOCK AND STRING OPERATIONS ===================
 
 ;C FILL   c-addr u char --  fill memory with char
-    head FILL,4,FILL,docode
+    chead FILL,4,FILL
         ld a,c          ; character in a
         exx             ; use alt. register set
         pop bc          ; count in bc
@@ -984,7 +1045,7 @@ filldone: exx           ; back to main reg set
 ; On byte machines, CMOVE and CMOVE> are logical
 ; factors of MOVE.  They are easy to implement on
 ; CPUs which have a block-move instruction.
-    head CMOVE,5,CMOVE,docode
+    chead CMOVE,5,CMOVE
         push bc
         exx
         pop bc      ; count
@@ -1000,7 +1061,7 @@ cmovedone: exx
 
 ;X CMOVE>  c-addr1 c-addr2 u --  move from top
 ; as defined in the ANSI optional String word set
-    head CMOVEUP,6,CMOVE>,docode
+    chead CMOVEUP,6,CMOVE>
         push bc
         exx
         pop bc      ; count
@@ -1025,7 +1086,7 @@ umovedone: exx
 ; ideal factors of WORD and FIND, they closely
 ; follow the string operations available on many
 ; CPUs, and so are easy to implement and fast.
-    head skip,4,SKIP,docode
+    chead skip,4,SKIP
         ld a,c      ; skip character
         exx
         pop bc      ; count
@@ -1049,7 +1110,7 @@ skipdone: push hl   ; updated address
 
 ;Z SCAN    c-addr u c -- c-addr' u'
 ;Z                      find matching char
-    head scan,4,SCAN,docode
+    chead scan,4,SCAN
         ld a,c      ; scan character
         exx
         pop bc      ; count
@@ -1071,7 +1132,7 @@ scandone: push hl   ; updated address
 
 ;Z S=    c-addr1 c-addr2 u -- n   string compare
 ;Z             n<0: s1<s2, n=0: s1=s2, n>0: s1>s2
-    head sequal,2,S=,docode
+    chead sequal,2,S=
         push bc
         exx
         pop bc      ; count
@@ -1103,6 +1164,6 @@ snext:  next
 #include "camel80h.asm"   ; High Level words
 
 lastword EQU link   ; nfa of last word in dict.
-enddict END_OF_SYSTEM_RAM ; user's code starts here
+enddict: EQU END_OF_SYSTEM_RAM ; user's code starts here
         END
 

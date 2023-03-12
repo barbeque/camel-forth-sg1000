@@ -42,11 +42,11 @@
 ; and so are defined as CODE words.
 
 ;C ALIGN    --                         align HERE
-    head ALIGN,5,ALIGN,docode
+    chead ALIGN,5,ALIGN
 noop:   next
 
 ;C ALIGNED  addr -- a-addr       align given addr
-    head ALIGNED,7,ALIGNED,docode
+    chead ALIGNED,7,ALIGNED
         jr noop
 
 ;Z CELL     -- n                 size of one cell
@@ -55,21 +55,21 @@ noop:   next
 
 ;C CELL+    a-addr1 -- a-addr2      add cell size
 ;   2 + ;
-    head CELLPLUS,5,CELL+,docode
+    chead CELLPLUS,5,CELL+
         inc bc
         inc bc
         next
 
 ;C CELLS    n1 -- n2            cells->adrs units
-    head CELLS,5,CELLS,docode
+    chead CELLS,5,CELLS
         jp twostar
 
 ;C CHAR+    c-addr1 -- c-addr2   add char size
-    head CHARPLUS,5,CHAR+,docode
+    chead CHARPLUS,5,CHAR+
         jp oneplus
 
 ;C CHARS    n1 -- n2            chars->adrs units
-    head CHARS,5,CHARS,docode
+    chead CHARS,5,CHARS
         jr noop
 
 ;C >BODY    xt -- a-addr      adrs of param field
@@ -82,7 +82,7 @@ noop:   next
 ; it is defined in the ANSI standard as COMPILE,.
 ; On a DTC Forth this simply appends xt (like , )
 ; but on an STC Forth this must append 'CALL xt'.
-    head COMMAXT,8,'COMPILE,',docode
+    rchead COMMAXT,8,'COMPILE,'
         jp COMMA
 
 ;Z !CF    adrs cfa --   set code action of a word
@@ -96,7 +96,7 @@ noop:   next
 
 ;Z ,CF    adrs --       append a code field
 ;   HERE !CF 3 ALLOT ;  Z80 VERSION (3 bytes)
-    head COMMACF,3,',CF',docolon
+    rhead COMMACF,3,',CF',docolon
         DW HERE,STORECF,LIT,3,ALLOT,EXIT
 
 ;Z !COLON   --      change code field to docolon
@@ -104,7 +104,7 @@ noop:   next
 ; This should be used immediately after CREATE.
 ; This is made a distinct word, because on an STC
 ; Forth, colon definitions have no code field.
-    head STORCOLON,6,'!COLON',docolon
+    rhead STORCOLON,6,'!COLON',docolon
         DW LIT,-3,ALLOT
         DW LIT,docolon,COMMACF,EXIT
 
@@ -112,7 +112,7 @@ noop:   next
 ;   ['] EXIT ,XT ;
 ; This is made a distinct word, because on an STC
 ; Forth, it appends a RET instruction, not an xt.
-    head CEXIT,5,',EXIT',docolon
+    rhead CEXIT,5,',EXIT',docolon
         DW LIT,EXIT,COMMAXT,EXIT
 
 ; CONTROL STRUCTURES ============================
@@ -123,21 +123,21 @@ noop:   next
 ; xt is the branch operator to use, e.g. qbranch
 ; or (loop).  It does NOT append the destination
 ; address.  On the Z80 this is equivalent to ,XT.
-    head COMMABRANCH,7,',BRANCH',docode
+    rchead COMMABRANCH,7,',BRANCH'
         jp COMMA
 
 ;Z ,DEST   dest --        append a branch address
 ; This appends the given destination address to
 ; the branch instruction.  On the Z80 this is ','
 ; ...other CPUs may use relative addressing.
-    head COMMADEST,5,',DEST',docode
+    rchead COMMADEST,5,',DEST'
         jp COMMA
 
 ;Z !DEST   dest adrs --    change a branch dest'n
 ; Changes the destination address found at 'adrs'
 ; to the given 'dest'.  On the Z80 this is '!'
 ; ...other CPUs may need relative addressing.
-    head STOREDEST,5,'!DEST',docode
+    rchead STOREDEST,5,'!DEST'
         jp STORE
 
 ; HEADER STRUCTURE ==============================

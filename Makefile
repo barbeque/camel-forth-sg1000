@@ -1,4 +1,4 @@
-ZASM_FLAGS := --labels
+ZASM_FLAGS := --labels --z80 --casefold
 local_path = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
 TEST_SYSTEM = "sg1000"

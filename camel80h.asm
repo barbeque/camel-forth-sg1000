@@ -346,21 +346,21 @@ TYP5:   DW EXIT
 
 ;Z (S")     -- c-addr u   run-time code for S"
 ;   R> COUNT 2DUP + ALIGNED >R  ;
-    head XSQUOTE,4,(S"),docolon
+    rhead XSQUOTE,4,'(S")',docolon
         DW RFROM,COUNT,TWODUP,PLUS,ALIGNED,TOR
         DW EXIT
 
 ;C S"       --         compile in-line string
 ;   COMPILE (S")  [ HEX ]
 ;   22 WORD C@ 1+ ALIGNED ALLOT ; IMMEDIATE
-    immed SQUOTE,2,S",docolon
+    rimmed SQUOTE,2,'S"',docolon
         DW LIT,XSQUOTE,COMMAXT
         DW LIT,22H,WORD,CFETCH,ONEPLUS
         DW ALIGNED,ALLOT,EXIT
 
 ;C ."       --         compile string to print
 ;   POSTPONE S"  POSTPONE TYPE ; IMMEDIATE
-    immed DOTQUOTE,2,.",docolon
+    rimmed DOTQUOTE,2,'."',docolon
         DW SQUOTE
         DW LIT,TYPE,COMMAXT
         DW EXIT
@@ -392,7 +392,7 @@ TYP5:   DW EXIT
 
 ;C <#    --             begin numeric conversion
 ;   PAD HP ! ;          (initialize Hold Pointer)
-    head LESSNUM,2,<#,docolon
+    head LESSNUM,2,\<#,docolon
         DW PAD,HP,STORE,EXIT
 
 ;Z >digit   n -- c      convert to 0..9A..Z
@@ -432,7 +432,7 @@ SIGN1:  DW EXIT
 
 ;C .     n --           display n signed
 ;   <# DUP ABS 0 #S ROT SIGN #> TYPE SPACE ;
-    head DOT,1,'.',docolon
+    rhead DOT,1,'.',docolon
         DW LESSNUM,DUP,ABS,LIT,0,NUMS
         DW ROT,SIGN,NUMGREATER,TYPE,SPACE,EXIT
 
@@ -463,12 +463,12 @@ SIGN1:  DW EXIT
 
 ;C ,    x --           append cell to dict
 ;   HERE ! 1 CELLS ALLOT ;
-    head COMMA,1,',',docolon
+    rhead COMMA,1,',',docolon
         dw HERE,STORE,lit,1,CELLS,ALLOT,EXIT
 
 ;C C,   char --        append char to dict
 ;   HERE C! 1 CHARS ALLOT ;
-    head CCOMMA,2,'C,',docolon
+    rhead CCOMMA,2,'C,',docolon
         dw HERE,CSTORE,lit,1,CHARS,ALLOT,EXIT
 
 ; INTERPRETER ===================================
@@ -699,7 +699,7 @@ QABO1:  DW TWODROP,EXIT
 ;C ABORT"  i*x 0  -- i*x   R: j*x -- j*x  x1=0
 ;C         i*x x1 --       R: j*x --      x1<>0
 ;   POSTPONE S" POSTPONE ?ABORT ; IMMEDIATE
-    immed ABORTQUOTE,6,ABORT",docolon
+    rimmed ABORTQUOTE,6,'ABORT"',docolon
         DW SQUOTE
         DW LIT,QABORT,COMMAXT
         DW EXIT
@@ -797,7 +797,7 @@ TICK:   call docolon
 
 ;C :        --      begin a colon definition
 ;   CREATE HIDE ] !COLON ;
-    head COLON,1,:,docode
+    chead COLON,1,:
         CALL docolon    ; code fwd ref explicitly
         DW CREATE,HIDE,RIGHTBRACKET,STORCOLON
         DW EXIT
@@ -805,7 +805,7 @@ TICK:   call docolon
 ;C ;
 ;   REVEAL  ,EXIT
 ;   POSTPONE [  ; IMMEDIATE
-    immed SEMICOLON,1,';',docolon
+    rimmed SEMICOLON,1,';',docolon
         DW REVEAL,CEXIT
         DW LEFTBRACKET,EXIT
 
@@ -880,7 +880,7 @@ POST2:  DW EXIT
 
 ;C BEGIN    -- adrs        target for bwd. branch
 ;   HERE ; IMMEDIATE
-    immed BEGIN,5,BEGIN,docode
+    cimmed BEGIN,5,BEGIN
         jp HERE
 
 ;C UNTIL    adrs --   conditional backward branch
@@ -899,7 +899,7 @@ POST2:  DW EXIT
 
 ;C WHILE    -- adrs         branch for WHILE loop
 ;   POSTPONE IF ; IMMEDIATE
-    immed WHILE,5,WHILE,docode
+    cimmed WHILE,5,WHILE
         jp IF
 
 ;C REPEAT   adrs1 adrs2 --     resolve WHILE loop
@@ -1016,8 +1016,8 @@ DOTS2:  DW EXIT
 ;   ABORT ;
     head COLD,4,COLD,docolon
         DW UINIT,U0,NINIT,CMOVE
-        -- SG1000: Removed as part of SG-1000 port, Mar 2023.
-        -- DW LIT,80h,COUNT,INTERPRET
+        ; SG1000: Removed as part of SG-1000 port, Mar 2023.
+        ; DW LIT,80h,COUNT,INTERPRET
         DW XSQUOTE
         DB 35,'Z80 CamelForth v1.01  25 Jan 1995'
         DB 0dh,0ah
