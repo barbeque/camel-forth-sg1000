@@ -1,6 +1,8 @@
  - [ ] Reset vector
+ - [ ] Emit
+ - [ ] Key?
+ - [ ] Key
  - [ ] Test program for Emit scrolling
- - [ ] Emit, Key, Key
  - [x] `docode` ifdef not working in pass1?
  - [x] words with commas in them (e.g. `COMPILE,`)
  - [x] words with quotes in them (e.g. S")
@@ -8,8 +10,8 @@
  - [x] case-sensitive labels
  - [ ] Hardware initializing
 	- [x] Identify Soggy-1000 (check for 8k of RAM)
-	- [ ] Set Soggy-1000 paging
-	- [ ] Set stack pointer (what are they trying to do?)
+	- [x] Set Soggy-1000 paging
+	- [x] Set stack pointer (what are they trying to do?)
 	- [ ] If Soggy identified, print console message
  - [x] Enddict -> starting ram address
 	- [x] Fix the compile error for that
