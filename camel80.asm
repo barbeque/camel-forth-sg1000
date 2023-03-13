@@ -412,6 +412,7 @@ cpmbdos EQU 5h          ; CP/M BDOS entry point
 ;   6 BDOS DROP ;
 ; warning: if c=0ffh, will read one keypress
     chead EMIT,4,EMIT
+        push hl
         push bc
         ld hl, (INSERTION_POINT)
 
@@ -424,6 +425,8 @@ cpmbdos EQU 5h          ; CP/M BDOS entry point
 
         inc hl
         ld (INSERTION_POINT), hl
+        pop hl ; restore hl since camelforth uses it
+_emit_exit:
         next
 
 ;Z SAVEKEY  -- addr  temporary storage for KEY?
