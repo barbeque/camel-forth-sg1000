@@ -1,10 +1,11 @@
  - [ ] Reset vector
- - [ ] VDP working in emulator
+ - [x] VDP working in emulator
  - [ ] VDP bringup timer
  - [ ] Emit
  - [ ] Key?
  - [ ] Key
  - [ ] Test program for Emit scrolling
+ - [ ] Handle newline in Emit
  - [x] `docode` ifdef not working in pass1?
  - [x] words with commas in them (e.g. `COMPILE,`)
  - [x] words with quotes in them (e.g. S")

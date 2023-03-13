@@ -410,8 +410,25 @@ cpmbdos EQU 5h          ; CP/M BDOS entry point
 ;C EMIT     c --    output character to console
 ;   6 BDOS DROP ;
 ; warning: if c=0ffh, will read one keypress
-    head EMIT,4,EMIT,docolon
-        DW LIT,06H,BDOS,DROP,EXIT
+    chead EMIT,4,EMIT
+        push bc
+        ld hl, (INSERTION_POINT)
+
+        call SetVDPWriteAddress ; inefficient but...
+        pop bc
+        ld a, c ; TODO: Get the value and deref
+        sub $20
+        out (VDP_DATA), a
+        nop_fudge
+
+        inc hl
+        ld (INSERTION_POINT), hl
+        next
+        
+        ; TODO: How do I call DROP from ASM?
+        ; TODO: How do I get the value I want?
+
+        ;DW LIT,06H,BDOS,DROP,EXIT
 
 ;Z SAVEKEY  -- addr  temporary storage for KEY?
     head savekey,7,SAVEKEY,dovar
