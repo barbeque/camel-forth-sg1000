@@ -408,6 +408,12 @@ cpmbdos EQU 5h          ; CP/M BDOS entry point
         pop de
         next
 
+; Rolls up the text view by one row,
+; generating the illusion of scrolling
+rollup:
+_rollup_end:
+        ret
+
 ;C EMIT     c --    output character to console
 ;   6 BDOS DROP ;
 ; warning: if c=0ffh, will read one keypress
@@ -426,6 +432,17 @@ cpmbdos EQU 5h          ; CP/M BDOS entry point
         nop_fudge
 
         inc hl
+
+        ld a, h
+        cp a, $3 ; 768 = $03 $00
+        jp nz, _emit_store_insert
+
+_emit_rolled_off_end:
+        ; Rolled off, push insertion point to start of last line
+        ld hl, TILEMAP_WIDTH * (TILEMAP_HEIGHT - 1)
+        ; TODO: Do a "roll up" now
+
+_emit_store_insert:
         ld (INSERTION_POINT), hl
 _emit_exit:
         pop hl ; restore hl since camelforth uses it

@@ -2,10 +2,18 @@
  - [x] VDP working in emulator
  - [ ] VDP bringup timer
  - [ ] Emit
+	- [x] 16-bit insertion point
  - [ ] Key?
  - [ ] Key
+	- [ ] What does CPMACCEPT do? How does TIB work?
+	- [ ] Where does KEY get called by QUIT? Does it?
+	- [ ] What does CP/M return for 'no key pressed?'
  - [ ] Test program for Emit scrolling
+	- [x] I guess we have one now with all the 'ok' spam
+	- [x] Detect insertion point over-roll (32 * 24 = 768) and reset it
+	- [ ] Rollup loop
  - [ ] Handle newline in Emit
+	- [ ] Find next column 0? Multiple of 32?
  - [ ] Get rid of carriage return (\r, $0d) from code calling Emit
  - [x] `docode` ifdef not working in pass1?
  - [x] words with commas in them (e.g. `COMPILE,`)
