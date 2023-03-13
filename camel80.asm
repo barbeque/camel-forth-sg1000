@@ -411,7 +411,15 @@ cpmbdos EQU 5h          ; CP/M BDOS entry point
 ; Rolls up the text view by one row,
 ; generating the illusion of scrolling
 rollup:
+        push hl
+
+        ; TODO: Read/write one character at a time from the top
+        ; FOR Y = 0 TO TILEMAP_HEIGHT - 1:
+        ;   FOR X = 0 TO TILEMAP_WIDTH:
+        ;     ADDR = Y * TILEMAP_WIDTH + X
+        ;     VRAM[ADDR] = VRAM[ADDR + TILEMAP_WIDTH]
 _rollup_end:
+        pop hl
         ret
 
 ;C EMIT     c --    output character to console
