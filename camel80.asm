@@ -7,7 +7,7 @@
 
 ; The location in nametable memory we are
 ; about to insert the next character into.
-INSERTION_POINT defs 1
+INSERTION_POINT defs 2
 
 ; Tells us where our system RAM area ends.
 ; Don't define any variables past here.
@@ -246,6 +246,7 @@ _after_top_found:
         ; Reset global memory values
         ld a, 0
         ld (INSERTION_POINT), a
+        ld (INSERTION_POINT + 1), a
 
         ; Put something on screen to demo
         ld hl, TILES_BASE
