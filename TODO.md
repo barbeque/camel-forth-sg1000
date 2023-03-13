@@ -6,6 +6,7 @@
  - [ ] Key
  - [ ] Test program for Emit scrolling
  - [ ] Handle newline in Emit
+ - [ ] Get rid of carriage return (\r, $0d) from code calling Emit
  - [x] `docode` ifdef not working in pass1?
  - [x] words with commas in them (e.g. `COMPILE,`)
  - [x] words with quotes in them (e.g. S")

@@ -1020,8 +1020,8 @@ DOTS2:  DW EXIT
         ; SG1000: Removed as part of SG-1000 port, Mar 2023.
         ; DW LIT,80h,COUNT,INTERPRET
         DW XSQUOTE
-        DB 35,'Z80 CamelForth v1.01  25 Jan 1995'
-        DB 0dh,0ah
+        DB 33,'Z80 CamelForth v1.01 25 Jan 1995'
+        DB 0ah
         ; Hmm why is this thing rebooting?
         DW TYPE,ABORT       ; ABORT never returns
 
