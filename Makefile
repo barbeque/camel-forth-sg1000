@@ -6,7 +6,7 @@ TEST_SYSTEM = "sg1000"
 
 all: camel80.sc
 
-camel80.sc: camel80.asm shared/*.asm
+camel80.sc: camel80.asm camel80h.asm camel80d.asm shared/*.asm
 	zasm ${ZASM_FLAGS} camel80.asm camel80.sc
 
 run: camel80.sc

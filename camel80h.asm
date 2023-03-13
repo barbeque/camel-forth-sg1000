@@ -44,8 +44,9 @@
 ;X tib     -- a-addr     Terminal Input Buffer
 ;  HEX 82 CONSTANT TIB   CP/M systems: 126 bytes
 ;  HEX -80 USER TIB      others: below user area
-    head TIB,3,TIB,docon
-        dw 82h
+; SG1000: Moved TIB below user area
+    head TIB,3,TIB,douser
+        dw -$80
 
 ;Z u0      -- a-addr       current user area adrs
 ;  0 USER U0
@@ -1021,5 +1022,6 @@ DOTS2:  DW EXIT
         DW XSQUOTE
         DB 35,'Z80 CamelForth v1.01  25 Jan 1995'
         DB 0dh,0ah
+        ; Hmm why is this thing rebooting?
         DW TYPE,ABORT       ; ABORT never returns
 

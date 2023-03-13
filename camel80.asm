@@ -239,11 +239,20 @@ _after_top_found:
 
         ; Set up VDP and install a font
         call ScreenInit
+        call ClearVRAM
         call DefineFont
+        call InitFontPalette
 
         ; Reset global memory values
         ld a, 0
         ld (INSERTION_POINT), a
+
+        ; Put something on screen to demo
+        ld hl, TILES_BASE
+        call SetVDPWriteAddress
+        ld a, $01
+        out (VDP_DATA), a
+        nop_fudge
 
         ; ...return to your regularly scheduled CamelForth-80
         ld de,1      ; do reset if COLD returns

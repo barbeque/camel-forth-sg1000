@@ -1,4 +1,6 @@
  - [ ] Reset vector
+ - [ ] VDP working in emulator
+ - [ ] VDP bringup timer
  - [ ] Emit
  - [ ] Key?
  - [ ] Key
