@@ -412,13 +412,48 @@ cpmbdos EQU 5h          ; CP/M BDOS entry point
 ; generating the illusion of scrolling
 rollup:
         push hl
+        push de
 
-        ; TODO: Read/write one character at a time from the top
-        ; FOR Y = 0 TO TILEMAP_HEIGHT - 1:
-        ;   FOR X = 0 TO TILEMAP_WIDTH:
-        ;     ADDR = Y * TILEMAP_WIDTH + X
-        ;     VRAM[ADDR] = VRAM[ADDR + TILEMAP_WIDTH]
+        ld hl, TILES_BASE
+        ld de, TILEMAP_HEIGHT * TILEMAP_WIDTH - TILEMAP_WIDTH
+_rollup_loop:
+        ; for hl = 0 to TILEMAP_WIDTH * (TILEMAP_HEIGHT - 1):
+        ;       read from vram[hl + TILEMAP_WIDTH]
+        ;       store to vram[hl]
+        ; try not to use A, C
+        ld bc, TILEMAP_WIDTH
+        add hl, bc
+        call SetVDPReadAddress
+        ; do some math while we're waiting for the VDP to read
+        ; (might have to add a nop here)
+        ld bc, -TILEMAP_WIDTH
+        add hl, bc
+        in a, (VDP_DATA)
+        ld b, a
+        ; back to the base address – store the next line's tile in this line
+        call SetVDPWriteAddress
+        ld a, b
+        out (VDP_DATA), a
+
+        inc hl
+
+        dec de
+        ld a, d
+        or e
+        jp nz, _rollup_loop
+
+        ; finally, clear the bottom line
+        ld hl, TILEMAP_HEIGHT * TILEMAP_WIDTH - TILEMAP_WIDTH + TILES_BASE
+        ld b, TILEMAP_WIDTH
+        call SetVDPWriteAddress
+_rollup_clear_last_line_loop:
+        ld a, $00
+        out (VDP_DATA), a
+        nop_fudge ; eh
+        djnz _rollup_clear_last_line_loop
+
 _rollup_end:
+        pop de
         pop hl
         ret
 
@@ -448,7 +483,8 @@ _rollup_end:
 _emit_rolled_off_end:
         ; Rolled off, push insertion point to start of last line
         ld hl, TILEMAP_WIDTH * (TILEMAP_HEIGHT - 1)
-        ; TODO: Do a "roll up" now
+        ; Do a "roll up" now
+        call rollup
 
 _emit_store_insert:
         ld (INSERTION_POINT), hl
