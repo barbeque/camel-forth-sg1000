@@ -425,8 +425,8 @@ _rollup_loop:
         add hl, bc
         call SetVDPReadAddress
         ; do some math while we're waiting for the VDP to read
-        ; (might have to add a nop here)
-        ld bc, -TILEMAP_WIDTH
+        ; TIMING: (might have to add a nop here)
+        ld bc, -TILEMAP_WIDTH ; this is DEFINITELY what the IX register is for
         add hl, bc
         in a, (VDP_DATA)
         ld b, a
@@ -434,6 +434,7 @@ _rollup_loop:
         call SetVDPWriteAddress
         ld a, b
         out (VDP_DATA), a
+        ; TIMING: probably don't have to do a nop fudge here since we're about to spend like a jillion cycles looping
 
         inc hl
 
