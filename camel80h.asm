@@ -677,7 +677,8 @@ INTER9: DW DROP,EXIT
     head QUIT,4,QUIT,docolon
         DW L0,LP,STORE
         DW R0,RPSTORE,LIT,0,STATE,STORE
-QUIT1:  DW TIB,DUP,TIBSIZE,CPMACCEPT,SPACE
+        ; SG1000: CPMACCEPT changed to ACCEPT - http://www.camelforth.com/e107_plugins/forum/forum_viewtopic.php?237
+QUIT1:  DW TIB,DUP,TIBSIZE,ACCEPT,SPACE
         DW INTERPRET
         DW STATE,FETCH,ZEROEQUAL,qbranch,QUIT2
         DW CR,XSQUOTE
