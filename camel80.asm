@@ -223,7 +223,6 @@ _init_ram_top_for_sc3000:
 
 _after_top_found:
         ; hl = end of avail.mem (EM)
-        ld l, 0      ; Round to $FF00, $C300 or whatever
         dec h        ; HL = end of memory - $100 ($FE00)
         ld sp,hl     ;      = top of param stack
         inc h        ; HL = EM
@@ -502,7 +501,8 @@ _emit_exit:
 ;   0FF 6 BDOS DUP SAVEKEY C! ;   rtns 0 or key
 ; must use BDOS function 6 to work with KEY
     head querykey,4,KEY?,docolon
-        DW LIT,0FFH,LIT,06H,BDOS
+        ; TODO: Implement
+        DW LIT,00H;,LIT,06H,BDOS
         DW DUP,SAVEKEY,CSTORE,EXIT
 
 ;C KEY      -- c    get character from keyboard
@@ -525,6 +525,8 @@ KEY2:   DW SAVEKEY,CFETCH,LIT,0,SAVEKEY,CSTORE
     head CPMACCEPT,9,CPMACCEPT,docolon
         DW SWOP,LIT,2,MINUS,TUCK,CSTORE
         DW DUP,LIT,0Ah,BDOS,DROP
+        ; CFETCH: Pull next character from pointer at top of stack
+        ; emit $0a (LINE FEED), return
         DW ONEPLUS,CFETCH,LIT,0Ah,EMIT,EXIT
 
 ;X BYE     i*x --    return to CP/M

@@ -42,7 +42,6 @@
         dw 124          ; 2 chars safety zone
 
 ;X tib     -- a-addr     Terminal Input Buffer
-;  HEX 82 CONSTANT TIB   CP/M systems: 126 bytes
 ;  HEX -80 USER TIB      others: below user area
 ; SG1000: Moved TIB below user area
     head TIB,3,TIB,douser
