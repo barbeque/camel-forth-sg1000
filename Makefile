@@ -1,5 +1,5 @@
 ZASM_FLAGS := --labels --z80 --casefold
-MAME_FLAGS := -aviwrite camel80.avi
+MAME_FLAGS := 
 local_path = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
 TEST_SYSTEM = "sg1000"
