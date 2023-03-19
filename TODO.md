@@ -1,17 +1,18 @@
  - [ ] Reset vector
  - [x] VDP working in emulator
  - [ ] VDP bringup timer
- - [ ] Emit
+ - [x] Emit
 	- [x] 16-bit insertion point
  - [ ] Key?
+	- [ ] Why does this thing act the same no matter what I store in SAVEKEY? Shouldn't it echo or at least handle $0d (return?)
  - [ ] Key
-	- [ ] What does CPMACCEPT do? How does TIB work?
-	- [ ] Where does KEY get called by QUIT? Does it?
-	- [ ] What does CP/M return for 'no key pressed?'
+	- [x] What does CPMACCEPT do? How does TIB work?
+	- [x] Where does KEY get called by QUIT? Does it?
+	- [x] What does CP/M return for 'no key pressed?'
  - [ ] Test program for Emit scrolling
 	- [x] I guess we have one now with all the 'ok' spam
 	- [x] Detect insertion point over-roll (32 * 24 = 768) and reset it
-	- [ ] Rollup loop
+	- [x] Rollup loop
  - [ ] Handle newline in Emit
 	- [ ] Find next column 0? Multiple of 32?
  - [ ] Get rid of carriage return (\r, $0d) from code calling Emit
@@ -27,5 +28,5 @@
 	- [ ] If Soggy identified, print console message
  - [x] Enddict -> starting ram address
 	- [x] Fix the compile error for that
- - [ ] Input buffer to new location
+ - [x] Input buffer to new location
  - [x] Delete TAIL definition

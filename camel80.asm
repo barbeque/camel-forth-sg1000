@@ -497,12 +497,41 @@ _emit_exit:
     head savekey,7,SAVEKEY,dovar
         DW 0
 
+; SEGAKEY - sega keyboard polling
+    chead segakey, 7, SEGAKEY
+        push bc ; idk
+        in a, ($dc)
+        bit 0, a ; Up
+        jr z, _segakey_enter
+        bit 1, a ; Down
+        jr z, _segakey_a
+_segakey_default:
+        ld b, 0
+        ld c, 0
+        ;push bc
+        jr _segakey_out
+_segakey_a:
+        ld b, 0
+        ld c, $41
+        jr _segakey_out
+_segakey_enter:
+        ; put this on the stack
+        ld b, 0
+        ld c, $0d
+        jr _segakey_out
+        ;push bc
+_segakey_out:
+        next
+
 ;X KEY?     -- f    return true if char waiting
 ;   0FF 6 BDOS DUP SAVEKEY C! ;   rtns 0 or key
 ; must use BDOS function 6 to work with KEY
     head querykey,4,KEY?,docolon
-        ; TODO: Implement
-        DW LIT,00H;,LIT,06H,BDOS
+        DW SEGAKEY
+        ; This value propagates out of KEY?
+        ; and probably also SAVEKEY, but what's going on
+        ; is ACCEPT not getting called?
+        ; DW DUP,EMIT ; Local echo
         DW DUP,SAVEKEY,CSTORE,EXIT
 
 ;C KEY      -- c    get character from keyboard
