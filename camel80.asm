@@ -511,6 +511,8 @@ _emit_exit:
         jr z, _segakey_enter
         bit 1, a ; Down
         jr z, _segakey_a
+        bit 2, a ; Left? I forget
+        jr z, _segakey_bksp
 _segakey_default:
         ld c, $00 ; nothing pressed
         jr _segakey_out
@@ -519,6 +521,9 @@ _segakey_a:
         jr _segakey_out
 _segakey_enter:
         ld c, $0d
+        jr _segakey_out
+_segakey_bksp:
+        ld c, $08 ; backspace
         jr _segakey_out
 _segakey_out:
         ld a, (LAST_KEY_PRESSED)
