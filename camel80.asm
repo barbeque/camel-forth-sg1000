@@ -499,28 +499,24 @@ _emit_exit:
 
 ; SEGAKEY - sega keyboard polling
     chead segakey, 7, SEGAKEY
-        push bc ; idk
+        push bc ; preserve previous top of stack
+        ld b, $00 ; we only return 8-bit values, so wipe it early
         in a, ($dc)
         bit 0, a ; Up
         jr z, _segakey_enter
         bit 1, a ; Down
         jr z, _segakey_a
 _segakey_default:
-        ld b, 0
-        ld c, 0
-        ;push bc
+        ld c, $00 ; nothing pressed
         jr _segakey_out
 _segakey_a:
-        ld b, 0
         ld c, $41
         jr _segakey_out
 _segakey_enter:
-        ; put this on the stack
-        ld b, 0
         ld c, $0d
         jr _segakey_out
-        ;push bc
 _segakey_out:
+        ; Key pressed (if any) returned through top of stack BC
         next
 
 ;X KEY?     -- f    return true if char waiting
@@ -532,7 +528,7 @@ _segakey_out:
         ; and probably also SAVEKEY, but what's going on
         ; is ACCEPT not getting called?
         ; DW DUP,EMIT ; Local echo
-        DW DUP,SAVEKEY,CSTORE,EXIT
+        DW EXIT; DUP,SAVEKEY,CSTORE,EXIT
 
 ;C KEY      -- c    get character from keyboard
 ;   BEGIN SAVEKEY C@ 0= WHILE KEY? DROP REPEAT
@@ -540,10 +536,11 @@ _segakey_out:
 ; must use CP/M direct console I/O to avoid echo
 ; (BDOS function 6, contained within KEY?)
     head KEY,3,KEY,docolon
-KEY1:   DW SAVEKEY,CFETCH,ZEROEQUAL,qbranch,KEY2
-        DW QUERYKEY,DROP,branch,KEY1
-KEY2:   DW SAVEKEY,CFETCH,LIT,0,SAVEKEY,CSTORE
-        DW EXIT
+KEY1:
+        dw QUERYKEY, DUP, LIT, $00, NOTEQUAL, qbranch, KEY2
+        dw DUP, EMIT, EXIT
+KEY2:
+        dw DROP, branch, KEY1
 
 ;Z CPMACCEPT  c-addr +n -- +n'  get line of input
 ;   SWAP 2 - TUCK C!      max # of characters

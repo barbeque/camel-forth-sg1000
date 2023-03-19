@@ -326,7 +326,7 @@ UMAX1:  DW DROP,EXIT
         DW OVER,PLUS,ONEMINUS,OVER
 ACC1:   DW KEY,DUP,LIT,0DH,NOTEQUAL,QBRANCH,ACC5 ; carriage return
         DW DUP,EMIT,DUP,LIT,8,EQUAL,QBRANCH,ACC3 ; backspace?
-        DW DROP,ONEMINUS,TOR,OVER,RFROM,UMAX
+        DW DROP,ONEMINUS,TOR,OVER,RFROM,UMAX ; backspace invoked
         DW BRANCH,ACC4
 ACC3:   DW OVER,CSTORE,ONEPLUS,OVER,UMIN ; append character
 ACC4:   DW BRANCH,ACC1 ; back to top, until carriage return encountered

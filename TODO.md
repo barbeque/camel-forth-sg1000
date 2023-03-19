@@ -3,13 +3,15 @@
  - [ ] VDP bringup timer
  - [x] Emit
 	- [x] 16-bit insertion point
- - [ ] Key?
-	- [ ] Why does this thing act the same no matter what I store in SAVEKEY? Shouldn't it echo or at least handle $0d (return?)
+ - [x] Key?
+	- [x] Why does this thing act the same no matter what I store in SAVEKEY? Shouldn't it echo or at least handle $0d (return?)
+	- [x] Basic joypad-based keyboard ('A', enter, nothing)
  - [ ] Key
 	- [x] What does CPMACCEPT do? How does TIB work?
 	- [x] Where does KEY get called by QUIT? Does it?
 	- [x] What does CP/M return for 'no key pressed?'
- - [ ] Test program for Emit scrolling
+	- [ ] Nothing seems to come out of KEY when called from ACCEPT?
+ - [x] Test program for Emit scrolling
 	- [x] I guess we have one now with all the 'ok' spam
 	- [x] Detect insertion point over-roll (32 * 24 = 768) and reset it
 	- [x] Rollup loop
