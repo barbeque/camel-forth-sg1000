@@ -11,6 +11,7 @@
 	- [x] Where does KEY get called by QUIT? Does it?
 	- [x] What does CP/M return for 'no key pressed?'
 	- [ ] Nothing seems to come out of KEY when called from ACCEPT?
+	- [ ] Why is it emitting twice?
  - [x] Test program for Emit scrolling
 	- [x] I guess we have one now with all the 'ok' spam
 	- [x] Detect insertion point over-roll (32 * 24 = 768) and reset it

@@ -9,6 +9,9 @@
 ; about to insert the next character into.
 INSERTION_POINT defs 2
 
+; Last key pressed, primitive debounce
+LAST_KEY_PRESSED defs 1
+
 ; Tells us where our system RAM area ends.
 ; Don't define any variables past here.
 END_OF_SYSTEM_RAM defs 1
@@ -246,6 +249,7 @@ _after_top_found:
         ld a, 0
         ld (INSERTION_POINT), a
         ld (INSERTION_POINT + 1), a
+        ld (LAST_KEY_PRESSED), a
 
         ; Put something on screen to demo
         ld hl, TILES_BASE
@@ -498,6 +502,7 @@ _emit_exit:
         DW 0
 
 ; SEGAKEY - sega keyboard polling
+; TODO: DEBOUNCE
     chead segakey, 7, SEGAKEY
         push bc ; preserve previous top of stack
         ld b, $00 ; we only return 8-bit values, so wipe it early
@@ -516,6 +521,17 @@ _segakey_enter:
         ld c, $0d
         jr _segakey_out
 _segakey_out:
+        ld a, (LAST_KEY_PRESSED)
+        cp a, c ; same key pressed as last frame?
+        jp nz, _segakey_new_key_pressed
+
+        ; same key pressed as last frame, don't return a key
+        ld c, $00
+        jr _segakey_really_done
+_segakey_new_key_pressed:
+        ld a, c
+        ld (LAST_KEY_PRESSED), a
+_segakey_really_done:
         ; Key pressed (if any) returned through top of stack BC
         next
 
@@ -538,7 +554,7 @@ _segakey_out:
     head KEY,3,KEY,docolon
 KEY1:
         dw QUERYKEY, DUP, LIT, $00, NOTEQUAL, qbranch, KEY2
-        dw DUP, EMIT, EXIT
+        dw EXIT
 KEY2:
         dw DROP, branch, KEY1
 
