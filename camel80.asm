@@ -498,8 +498,8 @@ _emit_exit:
         next
 
 ;Z SAVEKEY  -- addr  temporary storage for KEY?
-    head savekey,7,SAVEKEY,dovar
-        DW 0
+; head savekey,7,SAVEKEY,dovar
+;       DW 0
 
 ; SEGAKEY - sega keyboard polling
 ; TODO: DEBOUNCE
