@@ -236,8 +236,12 @@ _after_top_found:
         push hl         
         pop iy       ; IY = bottom of user area (EM-200h)
 
+        ; TODO: Zero out RAM
+
         ; Squelch the noise from the SN76489AN
         call MutePSG
+
+        ; TODO: Delay to wait for VDP to come available
 
         ; Set up VDP and install a font
         call ScreenInit
@@ -250,13 +254,6 @@ _after_top_found:
         ld (INSERTION_POINT), a
         ld (INSERTION_POINT + 1), a
         ld (LAST_KEY_PRESSED), a
-
-        ; Put something on screen to demo
-        ld hl, TILES_BASE
-        call SetVDPWriteAddress
-        ld a, $01
-        out (VDP_DATA), a
-        nop_fudge
 
         ; ...return to your regularly scheduled CamelForth-80
         ld de,1      ; do reset if COLD returns
