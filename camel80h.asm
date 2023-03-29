@@ -1022,6 +1022,9 @@ DOTS2:  DW EXIT
         DW XSQUOTE
         DB 33,'Z80 CamelForth v1.01 25 Jan 1995'
         DB 0ah
-        ; Hmm why is this thing rebooting?
-        DW TYPE,ABORT       ; ABORT never returns
+        DW TYPE
+
+        ; Conditional message if it's a soggy?
+        
+        DW ABORT       ; ABORT never returns
 
