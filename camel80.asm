@@ -225,6 +225,24 @@ _init_ram_top_for_sc3000:
         jr _after_top_found
 
 _after_top_found:
+        push hl
+        push de
+
+        ld de, SG1000_RAM_BASE - 1
+
+_zero_memory_loop:
+        ld (hl), $00
+        dec hl
+
+        or a ; clear carry flag
+        sbc hl, de
+        add hl, de ; restore HL value while preserving flags
+        jp nz, _zero_memory_loop
+
+        pop de
+        pop hl
+
+_done_zeroing_memory:
         ; hl = end of avail.mem (EM)
         dec h        ; HL = end of memory - $100 ($FE00)
         ld sp,hl     ;      = top of param stack
@@ -235,8 +253,6 @@ _after_top_found:
         dec h        ; HL = EM-200h
         push hl         
         pop iy       ; IY = bottom of user area (EM-200h)
-
-        ; TODO: Zero out RAM
 
         ; Squelch the noise from the SN76489AN
         call MutePSG

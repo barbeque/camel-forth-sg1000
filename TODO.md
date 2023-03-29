@@ -30,8 +30,10 @@
 	- [x] Identify Soggy-1000 (check for 8k of RAM)
 	- [x] Set Soggy-1000 paging
 	- [x] Set stack pointer (what are they trying to do?)
+	- [x] Zero appropriate amount of memory on startup
 	- [ ] If Soggy identified, print console message
  - [x] Enddict -> starting ram address
 	- [x] Fix the compile error for that
  - [x] Input buffer to new location
  - [x] Delete TAIL definition
+ - [ ] Add `SOGGY?` word
