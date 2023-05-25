@@ -1,5 +1,5 @@
 ZASM_FLAGS := --labels --z80 --casefold
-MAME_FLAGS := 
+MAME_FLAGS := -sgexp sk1100
 local_path = $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 MAME = mame
 
