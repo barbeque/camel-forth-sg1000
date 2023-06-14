@@ -4,7 +4,7 @@
  - [x] Emit
 	- [x] 16-bit insertion point
 	- [x] Handle backspace ($08)
-	- [ ] Prevent backspace at position 0
+	- [x] Prevent backspace at position 0
  - [x] Key?
 	- [x] Why does this thing act the same no matter what I store in SAVEKEY? Shouldn't it echo or at least handle $0d (return?)
 	- [x] Basic joypad-based keyboard ('A', enter, nothing)

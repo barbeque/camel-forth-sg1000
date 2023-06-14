@@ -487,8 +487,26 @@ _rollup_end:
         ld a, c
         cp a, $08 ; backspace
         jr nz, _set_write_address
-        dec hl ; TODO: Detect if hl = $0000 and abort this if so
+
+        ; backspace logic
+        ; first check to see if we are at HL = $0000 and cannot backspace further
+        ld a, h
+        cp a, $00
+        jr nz, _backspace_inner
+        ld a, l
+        cp a, $00
+        jr nz, _backspace_inner
+        jr _abort_backspace ; we cannot backspace further
+
+_backspace_inner
+        dec hl
+
         jr _set_write_address
+
+_abort_backspace:
+        pop hl
+        pop bc
+        next
 
 _set_write_address:
         call SetVDPWriteAddress ; inefficient but...
