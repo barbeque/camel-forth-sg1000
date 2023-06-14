@@ -3,7 +3,8 @@
  - [ ] VDP bringup timer
  - [x] Emit
 	- [x] 16-bit insertion point
-	- [ ] Handle backspace ($08)
+	- [x] Handle backspace ($08)
+	- [ ] Prevent backspace at position 0
  - [x] Key?
 	- [x] Why does this thing act the same no matter what I store in SAVEKEY? Shouldn't it echo or at least handle $0d (return?)
 	- [x] Basic joypad-based keyboard ('A', enter, nothing)
@@ -37,3 +38,7 @@
  - [x] Input buffer to new location
  - [x] Delete TAIL definition
  - [ ] Add `SOGGY?` word
+ - [ ] Keyboard handling
+	- [x] Hook up to MAME automatically
+	- [ ] Basic strobing logic? (set bits d2, d1, d0 of Port C)
+	- [ ] Generate key map table (what's the index? row * 8-bit port A index? then what about the handful of port B? maybe 4-bit row for a total 12-bit index? gonna be super sparse for one bit at a time)

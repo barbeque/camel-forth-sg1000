@@ -484,15 +484,38 @@ _rollup_end:
         push bc
         ld hl, (INSERTION_POINT)
 
+        ld a, c
+        cp a, $08 ; backspace
+        jr nz, _set_write_address
+        dec hl ; TODO: Detect if hl = $0000 and abort this if so
+        jr _set_write_address
+
+_set_write_address:
         call SetVDPWriteAddress ; inefficient but...
         pop bc
+
+        ; pull in the argument to EMIT
         ld a, c
+
+        ; special handling of special keys
+        cp a, $08 ; backspace
+        jr nz, _emit_inner
+
+        ld a, $20 ; wipe it out with a space
+
+_emit_inner:
         sub $20 ; my font set starts at $00 with space (ASCII $20)
         out (VDP_DATA), a
         nop_fudge
 
+        ; last check for backspace: just bail on incrementing if so
+        ld a, c
+        cp a, $08 ; backspace
+        jr z, _emit_check_rolloff
+
         inc hl
 
+_emit_check_rolloff:
         ld a, h
         cp a, $3 ; 768 = $03 $00
         jp nz, _emit_store_insert
