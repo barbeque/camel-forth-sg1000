@@ -523,7 +523,8 @@ _check_for_newline:
         ld (INSERTION_POINT), hl
 
         pop bc
-        push bc ; just to be on the safe side
+        pop hl ; do not actually print the newline, let's get out of here
+        next
 
 _not_newline:
 
@@ -562,6 +563,8 @@ _emit_rolled_off_end:
         ld hl, TILEMAP_WIDTH * (TILEMAP_HEIGHT - 1)
         ; Do a "roll up" now
         call rollup
+
+        ; FIXME: some kind of off by one error here
 
 _emit_store_insert:
         ld (INSERTION_POINT), hl

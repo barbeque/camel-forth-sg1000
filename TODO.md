@@ -19,8 +19,9 @@
 	- [x] I guess we have one now with all the 'ok' spam
 	- [x] Detect insertion point over-roll (32 * 24 = 768) and reset it
 	- [x] Rollup loop
- - [ ] Handle newline in Emit
-	- [ ] Find next column 0? Multiple of 32?
+ - [x] Handle newline in Emit
+	- [x] Find next column 0? Multiple of 32?
+ - [ ] Fix the "dropped first character" bug when rolling
  - [ ] Get rid of carriage return (\r, $0d) from code calling Emit
  - [x] `docode` ifdef not working in pass1?
  - [x] words with commas in them (e.g. `COMPILE,`)
