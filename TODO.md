@@ -21,7 +21,7 @@
 	- [x] Rollup loop
  - [x] Handle newline in Emit
 	- [x] Find next column 0? Multiple of 32?
- - [ ] Fix the "dropped first character" bug when rolling
+ - [x] Fix the "dropped first character" bug when rolling
  - [ ] Get rid of carriage return (\r, $0d) from code calling Emit
  - [x] `docode` ifdef not working in pass1?
  - [x] words with commas in them (e.g. `COMPILE,`)

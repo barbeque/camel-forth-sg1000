@@ -515,6 +515,7 @@ _check_for_newline:
         cp a, $0a ; newline
         jr nz, _not_newline
 
+_newline_find_new_insertion_point:
         ld bc, 32
         adc hl, bc ; jump hl ahead by one line (32 columns) from its current position
         ld a, l ; load the lower byte of hl
@@ -522,9 +523,9 @@ _check_for_newline:
         ld l, a
         ld (INSERTION_POINT), hl
 
-        pop hl ; do not actually print the newline, let's get out of here
-        pop bc
-        next
+        ; we might have to scroll after hitting a newline,
+        ; so jump to that logic to check
+        jr _emit_check_rolloff
 
 _not_newline:
 
@@ -563,8 +564,6 @@ _emit_rolled_off_end:
         ld hl, TILEMAP_WIDTH * (TILEMAP_HEIGHT - 1)
         ; Do a "roll up" now
         call rollup
-
-        ; FIXME: some kind of off by one error here
 
 _emit_store_insert:
         ld (INSERTION_POINT), hl
