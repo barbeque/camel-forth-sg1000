@@ -486,7 +486,7 @@ _rollup_end:
 
         ld a, c
         cp a, $08 ; backspace
-        jr nz, _set_write_address
+        jr nz, _not_backspace
 
         ; backspace logic
         ; first check to see if we are at HL = $0000 and cannot backspace further
@@ -507,6 +507,25 @@ _abort_backspace:
         pop hl
         pop bc
         next
+
+_not_backspace:
+
+_check_for_newline:
+        ld a, c
+        cp a, $0a ; newline
+        jr nz, _not_newline
+
+        ld bc, 32
+        adc hl, bc ; jump hl ahead by one line (32 columns) from its current position
+        ld a, l ; load the lower byte of hl
+        and 0b11100000 ; mask off everything that is less than a multiple of 32
+        ld l, a
+        ld (INSERTION_POINT), hl
+
+        pop bc
+        push bc ; just to be on the safe side
+
+_not_newline:
 
 _set_write_address:
         call SetVDPWriteAddress ; inefficient but...
