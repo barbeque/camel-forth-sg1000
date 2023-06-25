@@ -522,8 +522,8 @@ _check_for_newline:
         ld l, a
         ld (INSERTION_POINT), hl
 
-        pop bc
         pop hl ; do not actually print the newline, let's get out of here
+        pop bc
         next
 
 _not_newline:
