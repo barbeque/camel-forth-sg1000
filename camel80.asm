@@ -230,6 +230,10 @@ _after_top_found:
 
         ld de, SG1000_RAM_BASE - 1
 
+_prepare_keyboard:
+        ld a, $92
+        out ($df), a
+
 _zero_memory_loop:
         ld (hl), $00
         dec hl
@@ -580,19 +584,35 @@ _emit_exit:
 ; TODO: DEBOUNCE
     chead segakey, 7, SEGAKEY
         push bc ; preserve previous top of stack
-        ld b, $00 ; we only return 8-bit values, so wipe it early
+        ld b, $00 ; we only return 8-bit values, so wipe it early so as not to make BC weird
+
+        ; scan row 0
+        ld a, 0
+        out ($de), a
+        nop
+        nop
+
         in a, ($dc)
-        bit 0, a ; Up
-        jr z, _segakey_enter
-        bit 1, a ; Down
+        bit 2, a ; PA2 => 'A'
         jr z, _segakey_a
-        bit 2, a ; Left? I forget
-        jr z, _segakey_bksp
+
+        ld a, 4 ; row 4
+        out ($de), a
+        nop
+        nop
+
+        in a, ($dc)
+        bit 3, a ; PA3 => 'B'
+        jr z, _segakey_b
+
 _segakey_default:
         ld c, $00 ; nothing pressed
         jr _segakey_out
 _segakey_a:
         ld c, $41
+        jr _segakey_out
+_segakey_b:
+        ld c, $42
         jr _segakey_out
 _segakey_enter:
         ld c, $0d
