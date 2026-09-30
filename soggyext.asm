@@ -11,6 +11,15 @@
 
         next
 
+
+; As per Enri (http://cmpslv3.stars.ne.jp/Sg1000/EnrSG.htm):
+;  Port 0DCH-0DFH: For SK-1100
+;　It uses 8255, and uses 0DCH-0DFH.
+;　PA is 0DCH, PB is 0DDH, PC is 0DEH, CW is 0DFH
+;　The lower 3 bits of 0DEH become the key select.
+;　For numbers 0-6, ports 0DDH and 0DCH are used for keyboard data, and the data is read as PB and PA.
+;　In case No. 7, ports 0DDH and 0DCH are used to read data as the JOY terminals on the main unit.
+
 SOGGY_KEYMAP:
     ; 1, Q, A, Z, 0, ,, K, I, 8, 0, 0, 0
     .db 0x31, 0x51, 0x41, 0x5a, 0x0, 0x2c, 0x4b, 0x49, 0x38, 0x0, 0x0, 0x0
