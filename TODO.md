@@ -41,7 +41,8 @@
  - [ ] Add `SOGGY?` word
  - [ ] Keyboard handling
 	- [x] Hook up to MAME automatically
-	- [ ] Basic strobing logic? (set bits d2, d1, d0 of Port C)
+	- [x] Basic strobing logic? (set bits d2, d1, d0 of Port C)
 	- [x] Generate key map table (what's the index? row * 8-bit port A index? then what about the handful of port B? maybe 4-bit row for a total 12-bit index? gonna be super sparse for one bit at a time)
-	- [ ] Dereference key map table
-	- [ ] Why is pushing 1 resetting the computer?
+	- [x] Dereference key map table
+	- [ ] Why is pushing 1 resetting the computer? (STILL?)
+    - [ ] Why isn't backspace working on scanner code?
