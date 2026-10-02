@@ -12,6 +12,9 @@ INSERTION_POINT defs 2
 ; Last key pressed, primitive debounce
 LAST_KEY_PRESSED defs 1
 
+; Current row being scanned by keyboard
+KBD_SCAN_ROW defs 1
+
 ; Tells us where our system RAM area ends.
 ; Don't define any variables past here.
 END_OF_SYSTEM_RAM defs 1
@@ -584,6 +587,7 @@ _emit_exit:
 ; TODO: DEBOUNCE
     chead segakey, 7, SEGAKEY
         push bc ; preserve previous top of stack
+        push ix ; we'll use this for the array
         ld b, $00 ; we only return 8-bit values, so wipe it early so as not to make BC weird
 
         ; TODO: Should we keep track of the row in IX? then it's just ix + 0, ix + 1, ...
@@ -610,10 +614,13 @@ _emit_exit:
 
         ; start scanning on row 0
         ld a, 0
+        ; set the keymap pointer to the first row also...
+        ld ix, SOGGY_KEYMAP ; TODO: Use a different keymap for GRAPH, SHIFT, etc.
 
 _kbd_row_loop:
         ; set the keyboard row scanner
         out ($de), a
+        ld (KBD_SCAN_ROW), a ; hold onto this for later so it doesn't get whanged
         nop
         nop
 
@@ -623,46 +630,59 @@ _kbd_row_loop:
 _kbd_a_bit0:
         bit 0, a ; TODO: Could this be done in a macro?
         jr nz, _kbd_a_bit1
-        ; TODO: handle key press at bit 0, IDX = 0
+        ; handle key press at bit 0; IDX = 0
+        ld c, (ix + 0)
+        jp _segakey_out
 
 _kbd_a_bit1:
         bit 1, a
         jr nz, _kbd_a_bit2
-        ; TODO: handle key press at bit 1, IDX = 1
+        ; handle key press at bit 1; IDX = 1
+        ld c, (ix + 1)
+        jp _segakey_out
 
 _kbd_a_bit2:
         bit 2, a
         jr nz, _kbd_a_bit3
-        ; TODO: handle key press at bit 2, IDX = 2
+        ; handle key press at bit 2; IDX = 2
+        ld c, (ix + 2)
+        jp _segakey_out
 
 _kbd_a_bit3:
         bit 3, a
         jr nz, _kbd_a_bit4
-        ; TODO: handle key press at bit 3, IDX = 3
+        ; handle key press at bit 3; IDX = 3
+        ld c, (ix + 3)
+        jp _segakey_out
 
 _kbd_a_bit4:
         bit 4, a
         jr nz, _kbd_a_bit5
-        ; TODO: handle key press at bit 4, IDX = 4
+        ; handle key press at bit 4; IDX = 4
+        ld c, (ix + 4)
+        jp _segakey_out
 
 _kbd_a_bit5:
         bit 5, a
         jr nz, _kbd_a_bit6
-        ; TODO: handle key press at bit 5, IDX = 5
+        ; handle key press at bit 5; IDX = 5
+        ld c, (ix + 5)
+        jp _segakey_out
 
 _kbd_a_bit6:
         bit 6, a
         jr nz, _kbd_a_bit7
-        ; TODO: handle key press at bit 6, IDX = 6
+        ; handle key press at bit 6; IDX = 6
+        ld c, (ix + 6)
+        jp _segakey_out
 
 _kbd_a_bit7:
         bit 7, a
         jr nz, _kbd_b_test ; all of PA is exhausted...
-        ; TODO: handle key press at bit 7, IDX = 7
+        ; handle key press at bit 7; IDX = 7
+        ld c, (ix + 7)
+        jp _segakey_out
         
-        ; TODO: Scan each bit and set index and write
-        ; TODO: Store the active row so we know what part of the array we're working in
-
 _kbd_b_test:
         ; read port B - entries 8 to 10 of the array
         in a, ($dd)
@@ -670,47 +690,45 @@ _kbd_b_test:
 _kbd_b_bit0:
         bit 0, a ; TODO: Could this be done in a macro?
         jr nz, _kbd_b_bit1
-        ; TODO: handle key press at bit 0, IDX = 8
+        ; handle key press at bit 0; IDX = 8
+        ld c, (ix + 8)
+        jp _segakey_out
 
 _kbd_b_bit1:
         bit 1, a ; TODO: Could this be done in a macro?
         jr nz, _kbd_b_bit2
-        ; TODO: handle key press at bit 1, IDX = 9
+        ; handle key press at bit 1; IDX = 9
+        ld c, (ix + 9)
+        jp _segakey_out
 
 _kbd_b_bit2:
         bit 2, a ; TODO: Could this be done in a macro?
         jr nz, _kbd_b_bit3
-        ; TODO: handle key press at bit 2, IDX = 9
+        ; handle key press at bit 2; IDX = 10
+        ld c, (ix + 10)
+        jp _segakey_out
 
 _kbd_b_bit3:
         bit 3, a ; TODO: Could this be done in a macro?
         jr nz, _kbd_row_loop_end
-        ; TODO: handle key press at bit 3, IDX = 10
-
-        ; TODO: Scan each bit and set index and write
-        ; TODO: Store the active row so we know what part of the array we're working in
+        ; handle key press at bit 3; IDX = 11
+        ld c, (ix + 11)
+        jp _segakey_out
 
 _kbd_row_loop_end:
         ; nothing caught? increment row
+        ld bc, 12
+        add ix, bc ; look at a different row of the keymap also
+        
+        ld a, (KBD_SCAN_ROW)
         inc a
         cp a, 7 ; check if we're done scanning
-        jr nz, _kbd_row_loop ; not yet, keep going
+        jp nz, _kbd_row_loop ; not yet, keep going
 
 _segakey_default:
         ld c, $00 ; nothing pressed
         jr _segakey_out
-_segakey_a:
-        ld c, $41
-        jr _segakey_out
-_segakey_b:
-        ld c, $42
-        jr _segakey_out
-_segakey_enter:
-        ld c, $0d
-        jr _segakey_out
-_segakey_bksp:
-        ld c, $08 ; backspace
-        jr _segakey_out
+
 _segakey_out:
         ld a, (LAST_KEY_PRESSED)
         cp a, c ; same key pressed as last frame?
@@ -723,6 +741,8 @@ _segakey_new_key_pressed:
         ld a, c
         ld (LAST_KEY_PRESSED), a
 _segakey_really_done:
+        ; We don't need the contents of IX anymore.
+        pop ix
         ; Key pressed (if any) returned through top of stack BC
         next
 
