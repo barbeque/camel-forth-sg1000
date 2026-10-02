@@ -44,5 +44,6 @@
 	- [x] Basic strobing logic? (set bits d2, d1, d0 of Port C)
 	- [x] Generate key map table (what's the index? row * 8-bit port A index? then what about the handful of port B? maybe 4-bit row for a total 12-bit index? gonna be super sparse for one bit at a time)
 	- [x] Dereference key map table
-	- [ ] Why is pushing 1 resetting the computer? (STILL?)
+	- [x] Why is pushing 1 resetting the computer? (STILL?)
+    - [ ] Write an NMI/Pause handler
     - [ ] Why isn't backspace working on scanner code?
