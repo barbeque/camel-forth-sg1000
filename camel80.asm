@@ -688,28 +688,28 @@ _kbd_b_test:
         in a, ($dd)
 
 _kbd_b_bit0:
-        bit 0, a ; TODO: Could this be done in a macro?
+        bit 0, a 
         jr nz, _kbd_b_bit1
         ; handle key press at bit 0; IDX = 8
         ld c, (ix + 8)
         jp _segakey_out
 
 _kbd_b_bit1:
-        bit 1, a ; TODO: Could this be done in a macro?
+        bit 1, a 
         jr nz, _kbd_b_bit2
         ; handle key press at bit 1; IDX = 9
         ld c, (ix + 9)
         jp _segakey_out
 
 _kbd_b_bit2:
-        bit 2, a ; TODO: Could this be done in a macro?
+        bit 2, a 
         jr nz, _kbd_b_bit3
         ; handle key press at bit 2; IDX = 10
         ld c, (ix + 10)
         jp _segakey_out
 
 _kbd_b_bit3:
-        bit 3, a ; TODO: Could this be done in a macro?
+        bit 3, a 
         jr nz, _kbd_row_loop_end
         ; handle key press at bit 3; IDX = 11
         ld c, (ix + 11)
