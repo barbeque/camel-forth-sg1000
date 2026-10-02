@@ -586,24 +586,115 @@ _emit_exit:
         push bc ; preserve previous top of stack
         ld b, $00 ; we only return 8-bit values, so wipe it early so as not to make BC weird
 
-        ; scan row 0
+        ; TODO: Should we keep track of the row in IX? then it's just ix + 0, ix + 1, ...
+        ; with an increment of IX += 12 every row
+        ; how do we set IX effectively again?
+
+        ; strategies we could take with SOGGY_KEYMAP...
+        ; make separate PA and PB arrays and just look those up in separate loops
+        ; at runtime: increment row -> scan PA -> scan PB -> early exit for either
+        ; special case these arrays for shift, kana, etc.
+
+        ; for row = 0 to 6:
+        ;       ($de) <- row
+        ;       nop nop
+        ;       a <- ($dc)
+        ;       if a != 0 then look it up after conversion, return it
+        ;       TODO: convert a from bitwise to a number (unroll with BIT?)
+        ;       a <- ($dd)
+        ;       if a != 0 then look it up after conversion, return it
+        ;       TODO: convert a from bitwise to a number (unroll with BIT?)
+        ;       row += 1
+
+        ; https://www.smspower.org/forums/17652-SegaKeyboardSK1100 also
+
+        ; start scanning on row 0
         ld a, 0
+
+_kbd_row_loop:
+        ; set the keyboard row scanner
         out ($de), a
         nop
         nop
 
+        ; read port A - entries 0 to 7 of the array
         in a, ($dc)
-        bit 2, a ; PA2 => 'A'
-        jr z, _segakey_a
 
-        ld a, 4 ; row 4
-        out ($de), a
-        nop
-        nop
+_kbd_a_bit0:
+        bit 0, a ; TODO: Could this be done in a macro?
+        jr nz, _kbd_a_bit1
+        ; TODO: handle key press at bit 0, IDX = 0
 
-        in a, ($dc)
-        bit 3, a ; PA3 => 'B'
-        jr z, _segakey_b
+_kbd_a_bit1:
+        bit 1, a
+        jr nz, _kbd_a_bit2
+        ; TODO: handle key press at bit 1, IDX = 1
+
+_kbd_a_bit2:
+        bit 2, a
+        jr nz, _kbd_a_bit3
+        ; TODO: handle key press at bit 2, IDX = 2
+
+_kbd_a_bit3:
+        bit 3, a
+        jr nz, _kbd_a_bit4
+        ; TODO: handle key press at bit 3, IDX = 3
+
+_kbd_a_bit4:
+        bit 4, a
+        jr nz, _kbd_a_bit5
+        ; TODO: handle key press at bit 4, IDX = 4
+
+_kbd_a_bit5:
+        bit 5, a
+        jr nz, _kbd_a_bit6
+        ; TODO: handle key press at bit 5, IDX = 5
+
+_kbd_a_bit6:
+        bit 6, a
+        jr nz, _kbd_a_bit7
+        ; TODO: handle key press at bit 6, IDX = 6
+
+_kbd_a_bit7:
+        bit 7, a
+        jr nz, _kbd_b_test ; all of PA is exhausted...
+        ; TODO: handle key press at bit 7, IDX = 7
+        
+        ; TODO: Scan each bit and set index and write
+        ; TODO: Store the active row so we know what part of the array we're working in
+
+_kbd_b_test:
+        ; read port B - entries 8 to 10 of the array
+        in a, ($dd)
+
+_kbd_b_bit0:
+        bit 0, a ; TODO: Could this be done in a macro?
+        jr nz, _kbd_b_bit1
+        ; TODO: handle key press at bit 0, IDX = 8
+
+_kbd_b_bit1:
+        bit 1, a ; TODO: Could this be done in a macro?
+        jr nz, _kbd_b_bit2
+        ; TODO: handle key press at bit 1, IDX = 9
+
+_kbd_b_bit2:
+        bit 2, a ; TODO: Could this be done in a macro?
+        jr nz, _kbd_b_bit3
+        ; TODO: handle key press at bit 2, IDX = 9
+
+_kbd_b_bit3:
+        bit 3, a ; TODO: Could this be done in a macro?
+        jr nz, _kbd_row_loop_end
+        ; TODO: handle key press at bit 3, IDX = 10
+
+        ; TODO: Scan each bit and set index and write
+        ; TODO: Store the active row so we know what part of the array we're working in
+
+_kbd_row_loop_end:
+        ; nothing caught? increment row
+        inc a
+        cp a, 7 ; check if we're done scanning
+        jr nz, _kbd_row_loop ; not yet, keep going
 
 _segakey_default:
         ld c, $00 ; nothing pressed
