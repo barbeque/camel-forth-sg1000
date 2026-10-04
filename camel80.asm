@@ -621,6 +621,8 @@ _kbd_scan_accelerators:
         ld (KBD_SCAN_ROW), a ; select the accelerator row
         nop
         nop
+
+        ; TODO: Something's wrong with lowercase triggering two at once
         
         ; Now read port B
         in a, ($dd) ; port B
@@ -706,7 +708,7 @@ _kbd_a_bit7:
         ; handle key press at bit 7; IDX = 7
         ld c, (ix + 7)
         jp _segakey_out
-        
+
 _kbd_b_test:
         ; read port B - entries 8 to 10 of the array
         in a, ($dd)

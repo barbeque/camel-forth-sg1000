@@ -21,13 +21,13 @@ KEY_SHIFT = 0
 
 # TODO: Finish this keymap off (especially numbers/symbols.)
 KEYMAP = [
-    [ '!', 'q', 'a', 'z', KEY_KANA, ',', 'k', 'i', '8', 0, 0, 0 ],
-    [ '"', 'w', 's', 'x', ' ', '.', 'l', 'O', '9', 0, 0, 0 ],
-    [ '3', 'e', 'd', 'c', KEY_HOME_CLR, '/', ';', 'p', '0', 0, 0, 0 ],
-    [ '4', 'r', 'f', 'v', KEY_INS_DEL, KEY_PI, ':', '@', '-', 0, 0, 0 ],
-    [ '5', 't', 'g', 'b', 0, KEY_DOWN, ']', '[', '^', 0, 0, 0 ],
-    [ '6', 'y', 'h', 'n', 0, KEY_LEFT, KEY_RETURN, 0, KEY_YEN, 0, 0, KEY_FUNC ],
-    [ '7', 'u', 'j', 'm', 0, KEY_RIGHT, KEY_UP, 0, KEY_BREAK, KEY_GRAPH, KEY_CTRL, KEY_SHIFT ]
+    [ '!', 'q', 'a', 'z', KEY_KANA, '<', 'k', 'i', '(', 0, 0, 0 ],
+    [ '"', 'w', 's', 'x', ' ', '>', 'l', 'o', ')', 0, 0, 0 ],
+    [ '#', 'e', 'd', 'c', KEY_HOME_CLR, '?', '+', 'p', 0, 0, 0, 0 ],
+    [ '$', 'r', 'f', 'v', KEY_INS_DEL, KEY_PI, '*', '`', '-', 0, 0, 0 ],
+    [ '%', 't', 'g', 'b', 0, KEY_DOWN, '}', '{', '~', 0, 0, 0 ],
+    [ '&', 'y', 'h', 'n', 0, KEY_LEFT, KEY_RETURN, 0, KEY_YEN, 0, 0, KEY_FUNC ],
+    [ '\'', 'u', 'j', 'm', 0, KEY_RIGHT, KEY_UP, 0, KEY_BREAK, KEY_GRAPH, KEY_CTRL, KEY_SHIFT ]
 ]
 
 for row in KEYMAP:
