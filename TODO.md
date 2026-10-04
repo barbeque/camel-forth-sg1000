@@ -46,4 +46,8 @@
 	- [x] Dereference key map table
 	- [x] Why is pushing 1 resetting the computer? (STILL?)
     - [ ] Write an NMI/Pause handler
-    - [ ] Why isn't backspace working on scanner code?
+    - [x] Why isn't backspace working on scanner code?
+    - [ ] Figure out the "double key" on the shifted keyboard
+    - [ ] Find a typeface for Kana characters
+    - [ ] Find a typeface for Graph characters
+    - [ ] Decide on a combination character set (is there enough space?)
