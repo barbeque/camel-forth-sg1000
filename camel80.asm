@@ -612,10 +612,34 @@ _emit_exit:
 
         ; https://www.smspower.org/forums/17652-SegaKeyboardSK1100 also
 
+_kbd_scan_accelerators:
+        ; Scan just the accelerators (row 6, port B)
+        ; FUNC is on row 5, which I'm not sure why...
+        ld ix, SOGGY_KEYMAP ; default to regular key map
+
+        ld a, 6
+        ld (KBD_SCAN_ROW), a ; select the accelerator row
+        nop
+        nop
+        
+        ; Now read port B
+        in a, ($dd) ; port B
+
+_kbd_check_break:
+        ; bit 0 = break
+_kbd_check_graph:
+        ; bit 1 = graph
+_kbd_check_ctrl:
+        ; bit 2 = ctrl
+_kbd_check_shift:
+        ; bit 3 = shift
+        bit 3, a
+        jr nz, _kbd_scan_begin
+        ld ix, SOGGY_KEYMAP_LOWERCASE
+
+_kbd_scan_begin:
         ; start scanning on row 0
         ld a, 0
-        ; set the keymap pointer to the first row also...
-        ld ix, SOGGY_KEYMAP ; TODO: Use a different keymap for GRAPH, SHIFT, etc.
 
 _kbd_row_loop:
         ; set the keyboard row scanner
