@@ -588,26 +588,17 @@ _emit_exit:
     chead segakey, 7, SEGAKEY
         push bc ; preserve previous top of stack
         push ix ; we'll use this for the array
-        ld b, $00 ; we only return 8-bit values, so wipe it early so as not to make BC weird
-
-        ; TODO: Should we keep track of the row in IX? then it's just ix + 0, ix + 1, ...
-        ; with an increment of IX += 12 every row
-        ; how do we set IX effectively again?
-
-        ; strategies we could take with SOGGY_KEYMAP...
-        ; make separate PA and PB arrays and just look those up in separate loops
-        ; at runtime: increment row -> scan PA -> scan PB -> early exit for either
-        ; special case these arrays for shift, kana, etc.
+        ld b, $00 ; we only return 8-bit values in C, so wipe the upper byte early so as not to make BC weird
 
         ; for row = 0 to 6:
         ;       ($de) <- row
         ;       nop nop
         ;       a <- ($dc)
-        ;       if a != 0 then look it up after conversion, return it
-        ;       TODO: convert a from bitwise to a number (unroll with BIT?)
+        ;       check each bit in a, look up the keymap, return it
+        
         ;       a <- ($dd)
-        ;       if a != 0 then look it up after conversion, return it
-        ;       TODO: convert a from bitwise to a number (unroll with BIT?)
+        ;       check each bit in a, look up the keymap, return it
+
         ;       row += 1
 
         ; https://www.smspower.org/forums/17652-SegaKeyboardSK1100 also
@@ -623,6 +614,7 @@ _kbd_scan_accelerators:
         nop
 
         ; TODO: Something's wrong with lowercase triggering two at once
+        ; except for on row 6 (the accelerator row...)
         
         ; Now read port B
         in a, ($dd) ; port B
@@ -742,10 +734,11 @@ _kbd_b_bit3:
         jp _segakey_out
 
 _kbd_row_loop_end:
-        ; nothing caught? increment row
+        ; nothing caught? increment row - it's 12 bytes per row
         ld bc, 12
         add ix, bc ; look at a different row of the keymap also
         
+        ; increment row index to tell the keyboard 8255 to move on
         ld a, (KBD_SCAN_ROW)
         inc a
         cp a, 7 ; check if we're done scanning
