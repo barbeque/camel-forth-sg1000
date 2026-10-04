@@ -631,6 +631,8 @@ _kbd_check_shift:
         jr nz, _kbd_scan_begin
         ld ix, SOGGY_KEYMAP_LOWERCASE
 
+        ; TODO: Oddly it's losing track of the shift status on subsequent loops?
+
 _kbd_scan_begin:
         ; start scanning on row 0
         ld a, 0
@@ -753,7 +755,7 @@ _segakey_out:
         cp a, c ; same key pressed as last frame?
         jp nz, _segakey_new_key_pressed
 
-        ; same key pressed as last frame, don't return a key
+        ; same key pressed as last frame, don't return a new key
         ld c, $00
         jr _segakey_really_done
 _segakey_new_key_pressed:
