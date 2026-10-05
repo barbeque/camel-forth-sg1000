@@ -1,3 +1,11 @@
+       CAMELFORTH FOR THE SEGA SG-1000 - OCTOBER 2026
+       ==============================================
+This is a port of CamelForth/80 to the Sega SG-1000/Sega SC-3000 line of home computers. Current outstanding issue list is as follows:
+
+ - [ ] Lowercase letter bug
+
+The original CamelForth Z80 readme is included below:
+
        CAMELFORTH FOR THE Z80 - BETA TEST VERSION - 16 APRIL 1995
        ==========================================================
 
