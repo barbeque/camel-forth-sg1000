@@ -1,8 +1,13 @@
        CAMELFORTH FOR THE SEGA SG-1000 - OCTOBER 2026
        ==============================================
-This is a port of CamelForth/80 to the Sega SG-1000/Sega SC-3000 line of home computers. Current outstanding issue list is as follows:
+This is a port of CamelForth/80 to the Sega SG-1000/Sega SC-3000 line of home computers. The current status is **NOT WORKING**.
+
+Current major outstanding issue list is as follows:
 
  - [ ] Lowercase letter bug
+ - [ ] VDP delay timer missing - won't work on real hardware yet
+
+For a full issue list, check TODO.md
 
 The original CamelForth Z80 readme is included below:
 
