@@ -610,6 +610,7 @@ _kbd_scan_accelerators:
 
         ld a, 6
         ld (KBD_SCAN_ROW), a ; select the accelerator row
+        out ($de), a
         nop
         nop
 
