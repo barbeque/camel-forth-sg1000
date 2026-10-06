@@ -277,6 +277,7 @@ _done_zeroing_memory:
         ld (INSERTION_POINT), a
         ld (INSERTION_POINT + 1), a
         ld (LAST_KEY_PRESSED), a
+        ld (KBD_SCAN_ROW), a
 
         ; ...return to your regularly scheduled CamelForth-80
         ld de,1      ; do reset if COLD returns
@@ -584,7 +585,6 @@ _emit_exit:
 ;       DW 0
 
 ; SEGAKEY - sega keyboard polling
-; TODO: DEBOUNCE
     chead segakey, 7, SEGAKEY
         push bc ; preserve previous top of stack
         push ix ; we'll use this for the array
