@@ -609,13 +609,9 @@ _kbd_scan_accelerators:
         ld ix, SOGGY_KEYMAP ; default to regular key map
 
         ld a, 6
-        ld (KBD_SCAN_ROW), a ; select the accelerator row
         out ($de), a
         nop
         nop
-
-        ; TODO: Something's wrong with lowercase triggering two at once
-        ; except for on row 6 (the accelerator row...)
         
         ; Now read port B
         in a, ($dd) ; port B

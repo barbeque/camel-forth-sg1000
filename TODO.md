@@ -39,6 +39,7 @@
  - [x] Input buffer to new location
  - [x] Delete TAIL definition
  - [ ] Add `SOGGY?` word
+ - [ ] Why isn't it working in ares?
  - [ ] Keyboard handling
 	- [x] Hook up to MAME automatically
 	- [x] Basic strobing logic? (set bits d2, d1, d0 of Port C)
@@ -47,7 +48,7 @@
 	- [x] Why is pushing 1 resetting the computer? (STILL?)
     - [ ] Write an NMI/Pause handler
     - [x] Why isn't backspace working on scanner code?
-    - [ ] Figure out the "double key" on the shifted keyboard
+    - [x] Figure out the "double key" on the shifted keyboard
     - [ ] Find a typeface for Kana characters
     - [ ] Find a typeface for Graph characters
     - [ ] Decide on a combination character set (is there enough space?)
