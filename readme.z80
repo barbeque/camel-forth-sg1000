@@ -4,7 +4,6 @@ This is a port of CamelForth/80 to the Sega SG-1000/Sega SC-3000 line of home co
 
 Current major outstanding issue list is as follows:
 
- - [ ] Lowercase letter bug
  - [ ] VDP delay timer missing - won't work on real hardware yet
 
 For a full issue list, check TODO.md

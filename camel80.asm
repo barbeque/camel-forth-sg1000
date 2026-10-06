@@ -628,8 +628,6 @@ _kbd_check_shift:
         jr nz, _kbd_scan_begin
         ld ix, SOGGY_KEYMAP_LOWERCASE
 
-        ; TODO: Oddly it's losing track of the shift status on subsequent loops?
-
 _kbd_scan_begin:
         ; start scanning on row 0
         ld a, 0
