@@ -181,9 +181,19 @@ nexthl  MACRO
         ENDM
 
 ; RESET AND INTERRUPT VECTORS ===================
-        org 0h
+        org $00
 _entry:
-        jp reset
+        jp cold_start
+
+        org $38
+_warm_reset:
+        ; FIXME: figure out how to do this better so we don't lose state
+        reti
+
+        org $66
+_nmi:
+        ; ignore NMI/Pause button for now
+        retn
 
 ; TODO: Interrupts, etc go here
 
@@ -203,18 +213,30 @@ _entry:
 ; Big blobs of code here
 #include "shared/font_8x8.asm"
 #include "shared/psg.asm"
+#include "shared/warmup.asm"
 #include "shared/vdp.asm"
+
+cold_start:
+        call sg1000_cold_start
+        jr reset
 
 reset:
         ; Identify model and set stack pointer and memory
         is_soggy_v3
         cp a, $ff
+        ; Soggy-1000 - 16K RAM
         jr z, _init_ram_top_for_soggy
+
         is_sc3000
         cp a, $ff
+        ; SC-3000 - 2K RAM
         jr z, _init_ram_top_for_sc3000
+
+        ; SG-1000 - 1K RAM
         ld hl, SEGA_SG1000_RAM_TOP
         jr _after_top_found
+
+        ; TODO: Detect cartridge with RAM
 
 _init_ram_top_for_soggy:
         ; set second 8k to page 2, providing contiguous 16k
@@ -237,6 +259,7 @@ _prepare_keyboard:
         ld a, $92
         out ($df), a
 
+; TODO: we probably do not want to do this on warm start
 _zero_memory_loop:
         ld (hl), $00
         dec hl

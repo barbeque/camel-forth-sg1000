@@ -1,4 +1,4 @@
-; Soggy/SG-1000 specific words
+; Soggy-specific functionality
     rchead IS_SOGGY, 5, 'SOGGY?'
         push bc ; push old TOS
         

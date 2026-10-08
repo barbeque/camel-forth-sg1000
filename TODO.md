@@ -1,6 +1,7 @@
- - [ ] Reset vector
+ - [x] Reset vector
+ - [ ] Alternative warm reset path so it doesn't lose all memory
  - [x] VDP working in emulator
- - [ ] VDP bringup timer
+ - [x] VDP bringup timer
  - [x] Emit
 	- [x] 16-bit insertion point
 	- [x] Handle backspace ($08)
@@ -38,15 +39,15 @@
 	- [x] Fix the compile error for that
  - [x] Input buffer to new location
  - [x] Delete TAIL definition
- - [ ] Add `SOGGY?` word
+ - [ ] Add `SOGGY?` word (or test it)
  - [ ] Why isn't it working in ares?
- - [ ] Keyboard handling
+ - [x] Write an NMI/Pause handler
+ - [x] Keyboard handling
 	- [x] Hook up to MAME automatically
 	- [x] Basic strobing logic? (set bits d2, d1, d0 of Port C)
 	- [x] Generate key map table (what's the index? row * 8-bit port A index? then what about the handful of port B? maybe 4-bit row for a total 12-bit index? gonna be super sparse for one bit at a time)
 	- [x] Dereference key map table
 	- [x] Why is pushing 1 resetting the computer? (STILL?)
-    - [ ] Write an NMI/Pause handler
     - [x] Why isn't backspace working on scanner code?
     - [x] Figure out the "double key" on the shifted keyboard
     - [ ] Find a typeface for Kana characters
