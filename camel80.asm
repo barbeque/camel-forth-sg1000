@@ -217,7 +217,10 @@ _nmi:
 #include "shared/vdp.asm"
 
 cold_start:
+#define VDP_STARTUP_DELAY 1
+.if VDP_STARTUP_DELAY
         call sg1000_cold_start
+.endif
         jr reset
 
 reset:
