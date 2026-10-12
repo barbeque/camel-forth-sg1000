@@ -88,7 +88,7 @@
         ; write top 4 bits by mangling bottom 6 bits
         dw SWOP, LIT, 6, RSHIFT, SWOP, PSGLATCHSET
         ; PSGLATCHSET destroyed the previous 2, so write bottom 6 bits
-        dw LIT, 63, AND, SWOP, PSGDATASET
+        dw DROP, SWOP, LIT, 63, AND, SWOP, PSGDATASET
         dw EXIT
 
     chead PSGDATASET, 8, PSGDATA2
