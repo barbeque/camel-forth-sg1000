@@ -91,6 +91,39 @@
         dw DROP, SWOP, LIT, 63, AND, SWOP, PSGDATASET
         dw EXIT
 
+    head VOL0SET, 4, VOL0, docolon
+        dw LIT, 0, PSGVOLUMESET, EXIT
+
+    head VOL1SET, 4, VOL1, docolon
+        dw LIT, 1, PSGVOLUMESET, EXIT
+
+    head VOL2SET, 4, VOL2, docolon
+        dw LIT, 2, PSGVOLUMESET, EXIT
+
+    head VOL3SET, 4, VOL3, docolon
+        dw LIT, 3, PSGVOLUMESET, EXIT
+
+    head MUTE0SET, 5, MUTE0, docolon
+        dw LIT, 0xF, LIT, 0, PSGVOLUMESET, EXIT
+
+    head MUTE1SET, 5, MUTE1, docolon
+        dw LIT, 0xF, LIT, 1, PSGVOLUMESET, EXIT
+
+    head MUTE2SET, 5, MUTE2, docolon
+        dw LIT, 0xF, LIT, 2, PSGVOLUMESET, EXIT
+
+    head MUTE3SET, 5, MUTE3, docolon
+        dw LIT, 0xF, LIT, 3, PSGVOLUMESET, EXIT
+
+    head TONE0SET, 5, TONE0, docolon
+        dw LIT, 0, PSGTONESET, EXIT
+    
+    head TONE1SET, 5, TONE1, docolon
+        dw LIT, 1, PSGTONESET, EXIT
+
+    head TONE2SET, 5, TONE2, docolon
+        dw LIT, 1, PSGTONESET, EXIT
+
     chead PSGDATASET, 8, PSGDATA2
         ; load the remaining 6 bits of PSG data
         ; do not use this on its own!
