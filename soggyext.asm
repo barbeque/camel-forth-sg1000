@@ -75,10 +75,6 @@
         pop bc ; pop new TOS
         next
 
-    ; TODO: PSG data
-    ;   - take full word from BC (TOS)
-    ;   - truncate to 6 bits ($3f)
-
     chead PSGDATASET, 8, PSGDATA2
         ; load the remaining 6 bits of PSG data
         ; do not use this on its own!
