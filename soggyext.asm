@@ -76,6 +76,9 @@
         pop bc ; pop new TOS
         next
 
+    head PSGNOISESET, 8, PSGNOISE, docolon
+        dw LIT, 3, PSGLATCHSET, EXIT
+
     chead PSGDATASET, 8, PSGDATA2
         ; load the remaining 6 bits of PSG data
         ; do not use this on its own!
