@@ -13,7 +13,7 @@
 
     ; PSG data/control register
     head PSGPORT,7,PSGPORT,docolon
-        dw lit,$40,EXIT
+        dw lit,PSG_REGISTERS,EXIT
 
     ; VDP data register
     head VDPDATA,7,VDPDATA,docolon
@@ -23,8 +23,38 @@
     head VDPCTRL,7,VDPCTRL,docolon
         dw lit,VDP_REGISTERS,EXIT
 
+    chead PSGVOLUME, 6, PSGVOL
+        pop hl ; data in HL
+        
+        ; channel in C
+        ld a, c
+        and $3 ; cut to two bits
+        rl a ; shift left one
+        or %1001 ; "latch" bit and "volume" bit
+
+        ; ...put channel in upper nibble
+        rl a
+        rl a
+        rl a
+        rl a
+        ld c, a ; store this for a second
+        
+        ; ...put data portion in lower nibble
+        ld a, l
+        and $f
+        or c
+        ; TODO: out to port
+_just_before_psg:
+        out (PSG_REGISTERS), a
+
+        pop bc ; pop new TOS
+        next
+
     ; TODO: word for PSG Volume (4-bit) and word for PSG Tone (10-bit) and word for PSG Noise (3-bit)
-    ; inefficient version: always latch for tone, even if it's the same channel as last time
+    ; offer words for "just data" as well and build it up, but have the PSGTONE word always latch
+    ; tempo words and stuff would be neat too
+
+    ; TODO: How does bitmasking work? Let's just do it in assembly?
 
 ; As per Enri (http://cmpslv3.stars.ne.jp/Sg1000/EnrSG.htm):
 ;  Port 0DCH-0DFH: For SK-1100
