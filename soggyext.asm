@@ -90,14 +90,19 @@
 
         pop bc ; pop new TOS
         next
+
+    ; TODO: convenience word for PSG Tone
+    ;   1. capture bottom two bits of data.H
+    ;   2. shift data.H left by 2
+    ;   3. store data.L somewhere safe
+    ;   4. capture top two bits of data.L
+    ;   5. shift data.L left by 2, wrapping around
+    ;   6. OR data.H and data.L together
+    ;   7. feed to PSGNOISE to set first nibble of tone data
+    ;   8. retrieve the data.L from "somewhere safe"
+    ;   9. capture bottom six bits of data.L
+    ;   10. feed to PSGDATA2 to set the second 6 bits of tone data
     
-
-    ; TODO: word for PSG Volume (4-bit) and word for PSG Tone (10-bit) and word for PSG Noise (3-bit)
-    ; offer words for "just data" as well and build it up, but have the PSGTONE word always latch
-    ; tempo words and stuff would be neat too
-
-    ; TODO: How does bitmasking work? Let's just do it in assembly?
-
 ; As per Enri (http://cmpslv3.stars.ne.jp/Sg1000/EnrSG.htm):
 ;  Port 0DCH-0DFH: For SK-1100
 ;　It uses 8255, and uses 0DCH-0DFH.
