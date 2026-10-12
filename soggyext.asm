@@ -1,5 +1,5 @@
 ; Soggy-specific functionality
-    rchead IS_SOGGY, 5, 'SOGGY?'
+    rchead IS_SOGGY, 6, 'SOGGY?'
         push bc ; push old TOS
         
         push hl
