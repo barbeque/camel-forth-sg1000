@@ -79,6 +79,10 @@
     head PSGNOISESET, 8, PSGNOISE, docolon
         dw LIT, 3, PSGLATCHSET, EXIT
 
+    head PSGTONESET, 7, PSGTONE, docolon
+        ; write top 4 bits by mangling bottom 6 bits
+        dw SWOP, LIT, 6, RSHIFT, SWOP, PSGLATCHSET, EXIT
+
     chead PSGDATASET, 8, PSGDATA2
         ; load the remaining 6 bits of PSG data
         ; do not use this on its own!
