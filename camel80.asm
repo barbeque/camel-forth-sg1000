@@ -290,8 +290,6 @@ _done_zeroing_memory:
         ; Squelch the noise from the SN76489AN
         call MutePSG
 
-        ; TODO: Delay to wait for VDP to come available
-
         ; Set up VDP and install a font
         call ScreenInit
         call ClearVRAM
@@ -530,23 +528,23 @@ _rollup_end:
         ld a, l
         cp a, $00
         jr nz, _backspace_inner
-        jr _abort_backspace ; we cannot backspace further
+        jr _emit_exit ; we cannot backspace further
 
 _backspace_inner
         dec hl
 
         jr _set_write_address
 
-_abort_backspace:
-        pop hl
-        pop bc
-        next
-
 _not_backspace:
+
+_check_for_ignored_character:
+        ld a, c
+        cp a, $0d ; carriage return
+        jr z, _emit_exit
 
 _check_for_newline:
         ld a, c
-        cp a, $0a ; newline
+        cp a, $0a ; line-feed, which we treat as newline
         jr nz, _not_newline
 
 _newline_find_new_insertion_point:
