@@ -539,11 +539,11 @@ _not_backspace:
 
 _check_for_ignored_character:
         ld a, c
+
         cp a, $0d ; carriage return
         jr z, _emit_exit
 
 _check_for_newline:
-        ld a, c
         cp a, $0a ; line-feed, which we treat as newline
         jr nz, _not_newline
 
