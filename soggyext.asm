@@ -23,6 +23,9 @@
     head VDPCTRL,7,VDPCTRL,docolon
         dw lit,VDP_REGISTERS,EXIT
 
+    ; TODO: word for PSG Volume (4-bit) and word for PSG Tone (10-bit) and word for PSG Noise (3-bit)
+    ; inefficient version: always latch for tone, even if it's the same channel as last time
+
 ; As per Enri (http://cmpslv3.stars.ne.jp/Sg1000/EnrSG.htm):
 ;  Port 0DCH-0DFH: For SK-1100
 ;　It uses 8255, and uses 0DCH-0DFH.
