@@ -49,7 +49,7 @@
         pop bc ; pop new TOS
         next
 
-    chead PSGNOISESET, 8, PSGNOISE
+    chead PSGLATCHSET, 8, PSGLATCH
         pop hl ; noise data in HL
         
         ; channel in C
@@ -67,7 +67,8 @@
         
         ; ...put data portion in lower nibble
         ld a, l
-        and $7 ; noise is only 3-bits long...
+        and $f ; noise is only 3-bits long, but the top bit is ignored;
+        ; tone data will need all 4-bits
         or c
         
         out (PSG_REGISTERS), a
@@ -102,7 +103,7 @@
     ;   8. retrieve the data.L from "somewhere safe"
     ;   9. capture bottom six bits of data.L
     ;   10. feed to PSGDATA2 to set the second 6 bits of tone data
-    
+
 ; As per Enri (http://cmpslv3.stars.ne.jp/Sg1000/EnrSG.htm):
 ;  Port 0DCH-0DFH: For SK-1100
 ;　It uses 8255, and uses 0DCH-0DFH.
