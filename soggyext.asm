@@ -23,7 +23,7 @@
     head VDPCTRL,7,VDPCTRL,docolon
         dw lit,VDP_REGISTERS,EXIT
 
-    chead PSGVOLUME, 6, PSGVOL
+    chead PSGVOLUMESET, 6, PSGVOL
         pop hl ; data in HL
         
         ; channel in C
@@ -43,12 +43,58 @@
         ld a, l
         and $f
         or c
-        ; TODO: out to port
-_just_before_psg:
+        
         out (PSG_REGISTERS), a
 
         pop bc ; pop new TOS
         next
+
+    chead PSGNOISESET, 8, PSGNOISE
+        pop hl ; noise data in HL
+        
+        ; channel in C
+        ld a, c
+        and $3 ; cut to two bits
+        rl a ; shift left one
+        or %1000 ; "latch" bit set and unset "tone/noise" bit
+
+        ; ...put channel in upper nibble
+        rl a
+        rl a
+        rl a
+        rl a
+        ld c, a ; store this for a second
+        
+        ; ...put data portion in lower nibble
+        ld a, l
+        and $7 ; noise is only 3-bits long...
+        or c
+        
+        out (PSG_REGISTERS), a
+
+        pop bc ; pop new TOS
+        next
+
+    ; TODO: PSG data
+    ;   - take full word from BC (TOS)
+    ;   - truncate to 6 bits ($3f)
+
+    chead PSGDATASET, 8, PSGDATA2
+        ; load the remaining 6 bits of PSG data
+        ; do not use this on its own!
+
+        ; PSG data in BC... truncate to 6 bits
+        ld a, c
+        and $3f
+
+        ; header doesn't need to be applied, it should be %00 anyway
+        ; or something has gone really wrong
+        
+        out (PSG_REGISTERS), a
+
+        pop bc ; pop new TOS
+        next
+    
 
     ; TODO: word for PSG Volume (4-bit) and word for PSG Tone (10-bit) and word for PSG Noise (3-bit)
     ; offer words for "just data" as well and build it up, but have the PSGTONE word always latch
