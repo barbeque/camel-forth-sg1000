@@ -11,6 +11,17 @@
 
         next
 
+    ; PSG data/control register
+    head PSGPORT,7,PSGPORT,docolon
+        dw lit,$40,EXIT
+
+    ; VDP data register
+    head VDPDATA,7,VDPDATA,docolon
+        dw lit,VDP_DATA,EXIT
+
+    ; VDP control register
+    head VDPCTRL,7,VDPCTRL,docolon
+        dw lit,VDP_REGISTERS,EXIT
 
 ; As per Enri (http://cmpslv3.stars.ne.jp/Sg1000/EnrSG.htm):
 ;  Port 0DCH-0DFH: For SK-1100
