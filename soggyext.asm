@@ -79,12 +79,9 @@
     head PSGNOISESET, 8, PSGNOISE, docolon
         dw LIT, 3, PSGLATCHSET, EXIT
 
-    head DOUBLEUP, 3, DUB, docolon
-        dw OVER, SWOP, DUP, ROT, SWOP, EXIT
-
     head PSGTONESET, 7, PSGTONE, docolon
         ; double up the arguments, into the same order as input
-        dw DOUBLEUP
+        dw TWODUP
         ; write top 4 bits by mangling bottom 6 bits
         dw SWOP, LIT, 6, RSHIFT, SWOP, PSGLATCHSET
         ; PSGLATCHSET destroyed the previous 2, so write bottom 6 bits
