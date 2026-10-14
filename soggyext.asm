@@ -23,6 +23,9 @@
     head VDPCTRL,7,VDPCTRL,docolon
         dw lit,VDP_REGISTERS,EXIT
 
+    ; PSG words
+
+    ; Set volume of a channel
     chead PSGVOLUMESET, 6, PSGVOL
         pop hl ; data in HL
         
@@ -49,6 +52,7 @@
         pop bc ; pop new TOS
         next
 
+    ; Make the PSG latch the upper 4 bits of tone data (or all of noise data)
     chead PSGLATCHSET, 8, PSGLATCH
         pop hl ; noise data in HL
         
@@ -76,9 +80,11 @@
         pop bc ; pop new TOS
         next
 
+    ; Convenience function to latch noise
     head PSGNOISESET, 8, PSGNOISE, docolon
         dw LIT, 3, PSGLATCHSET, EXIT
 
+    ; Set the full 10-bit tone value for a channel
     head PSGTONESET, 7, PSGTONE, docolon
         ; double up the arguments, into the same order as input
         dw TWODUP
@@ -88,27 +94,35 @@
         dw DROP, SWOP, LIT, 63, AND, SWOP, PSGDATASET
         dw EXIT
 
+    ; Set the volume for channel 0
     head VOL0SET, 4, VOL0, docolon
         dw LIT, 0, PSGVOLUMESET, EXIT
 
+    ; Set the volume for channel 1
     head VOL1SET, 4, VOL1, docolon
         dw LIT, 1, PSGVOLUMESET, EXIT
 
+    ; Set the volume for channel 3
     head VOL2SET, 4, VOL2, docolon
         dw LIT, 2, PSGVOLUMESET, EXIT
 
+    ; Set the volume for the noise channel
     head VOL3SET, 4, VOL3, docolon
         dw LIT, 3, PSGVOLUMESET, EXIT
 
+    ; Mute channel 0
     head MUTE0SET, 5, MUTE0, docolon
         dw LIT, 0xF, LIT, 0, PSGVOLUMESET, EXIT
 
+    ; Mute channel 1
     head MUTE1SET, 5, MUTE1, docolon
         dw LIT, 0xF, LIT, 1, PSGVOLUMESET, EXIT
 
+    ; Mute channel 2
     head MUTE2SET, 5, MUTE2, docolon
         dw LIT, 0xF, LIT, 2, PSGVOLUMESET, EXIT
 
+    ; Mute the noise channel
     head MUTE3SET, 5, MUTE3, docolon
         dw LIT, 0xF, LIT, 3, PSGVOLUMESET, EXIT
 
@@ -119,7 +133,7 @@
         dw LIT, 1, PSGTONESET, EXIT
 
     head TONE2SET, 5, TONE2, docolon
-        dw LIT, 1, PSGTONESET, EXIT
+        dw LIT, 2, PSGTONESET, EXIT
 
     chead PSGDATASET, 8, PSGDATA2
         ; load the remaining 6 bits of PSG data
