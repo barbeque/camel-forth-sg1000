@@ -135,6 +135,21 @@
     head TONE2SET, 5, TONE2, docolon
         dw LIT, 2, PSGTONESET, EXIT
 
+    chead VDPWRITE, 4, "VDP!"
+        ; Set address from BC (TOS)
+        ld a, c
+        out (VDP_REGISTERS), a
+        ld a, b
+        or 64 ; set write bit
+        out (VDP_REGISTERS), a
+
+        pop bc ; retrieve data
+        ld a, c
+        out (VDP_DATA), a
+
+        pop bc ; pop new tos
+        next
+
     chead PSGDATASET, 8, PSGDATA2
         ; load the remaining 6 bits of PSG data
         ; do not use this on its own!
