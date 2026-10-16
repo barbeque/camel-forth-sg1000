@@ -150,6 +150,18 @@
         pop bc ; pop new tos
         next
 
+    chead VDPREAD, 4, "VDP@"
+        ; Set address from BC (TOS)
+        ld a, c
+        out (VDP_REGISTERS), a
+        ld a, b
+        out (VDP_REGISTERS), a
+
+        in a, (VDP_DATA)
+
+        pop bc ; pop new tos
+        next
+
     chead PSGDATASET, 8, PSGDATA2
         ; load the remaining 6 bits of PSG data
         ; do not use this on its own!
