@@ -135,7 +135,7 @@
     head TONE2SET, 5, TONE2, docolon
         dw LIT, 2, PSGTONESET, EXIT
 
-    chead VDPWRITE, 4, "VDP!"
+    chead VDPWRITE, 4, VDP!
         ; Set address from BC (TOS)
         ld a, c
         out (VDP_REGISTERS), a
@@ -150,7 +150,7 @@
         pop bc ; pop new tos
         next
 
-    chead VDPREAD, 4, "VDP@"
+    chead VDPREAD, 4, VDP@
         ; Set address from BC (TOS)
         ld a, c
         out (VDP_REGISTERS), a
