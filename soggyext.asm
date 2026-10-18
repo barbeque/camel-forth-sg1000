@@ -178,6 +178,7 @@
         ld a, l
         out (VDP_REGISTERS), a
 
+        pop bc ; pop new tos
         next
 
     chead VDPSTATUSREAD, 4, VDP$
