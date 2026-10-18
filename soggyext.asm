@@ -180,6 +180,21 @@
 
         next
 
+    chead VDPREGISTERREAD, 5, VDP#@
+        ; VDP address (register index) is TOS
+        ld a, c
+        
+        ; Latch data first, then tell it you want it in a register
+        out (VDP_REGISTERS), a
+
+        in a, (VDP_DATA)
+
+        ; Put the result on TOS
+        ld b, 0
+        ld c, a
+
+        next
+
     chead PSGDATASET, 8, PSGDATA2
         ; load the remaining 6 bits of PSG data
         ; do not use this on its own!
