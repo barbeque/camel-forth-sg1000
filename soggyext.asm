@@ -180,19 +180,13 @@
 
         next
 
-    chead VDPREGISTERREAD, 5, VDP#@
-        ; VDP address (register index) is TOS
-        ld a, c
-        
-        ; Latch data first, then tell it you want it in a register
-        out (VDP_REGISTERS), a
+    chead VDPSTATUSREAD, 4, VDP$
+        ; no arguments necessary, it's a straight read
+        in a, (VDP_REGISTERS)
 
-        in a, (VDP_DATA)
-
-        ; Put the result on TOS
+        push bc
         ld b, 0
         ld c, a
-
         next
 
     chead PSGDATASET, 8, PSGDATA2
