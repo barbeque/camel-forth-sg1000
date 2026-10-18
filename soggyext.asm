@@ -192,6 +192,22 @@
         ld c, a
         next
 
+    ; Expose constants for VDP tables
+    head VDPTILESBASE, 12, VDPTILESBASE, docolon
+        dw LIT, TILES_BASE, EXIT
+
+    head VDPCOLOURSBASE, 14, VDPCOLOURSBASE, docolon
+        dw LIT, COLOURS_BASE, EXIT
+
+    head VDPPATTERNSBASE, 15, VDPPATTERNSBASE, docolon
+        dw LIT, PATTERNS_BASE, EXIT
+
+    head VDPSPRITEATTRIBS, 16, VDPSPRITEATTRIBS, docolon
+        dw LIT, SPRITE_ATTRIBS_BASE, EXIT
+
+    head VDPSPRITEPATTERNS, 17, VDPSPRITEPATTERNS, docolon
+        dw LIT, SPRITE_PATTERNS_BASE, EXIT
+
     chead PSGDATASET, 8, PSGDATA2
         ; load the remaining 6 bits of PSG data
         ; do not use this on its own!
