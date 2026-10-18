@@ -162,6 +162,24 @@
         pop bc ; pop new tos
         next
 
+    chead VDPREGISTERWRITE, 4, VDP#
+        ; VDP address (register index) is TOS
+        ld a, c
+        or $80 ; this bit indicates "write"
+        ld l, c
+
+        ; VDP data is right underneath it
+        pop bc
+        ld a, c
+
+        ; Latch data first, then tell it you want it in a register
+        out (VDP_REGISTERS), a
+
+        ld a, l
+        out (VDP_REGISTERS), a
+
+        next
+
     chead PSGDATASET, 8, PSGDATA2
         ; load the remaining 6 bits of PSG data
         ; do not use this on its own!
