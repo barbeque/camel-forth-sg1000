@@ -166,13 +166,13 @@
         ; VDP address (register index) is TOS
         ld a, c
         or $80 ; this bit indicates "write"
-        ld l, c
+        ld l, a
 
         ; VDP data is right underneath it
         pop bc
         ld a, c
 
-        ; Latch data first, then tell it you want it in a register
+        ; Latch data first, then tell it which register
         out (VDP_REGISTERS), a
 
         ld a, l
