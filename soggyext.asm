@@ -163,6 +163,7 @@
         next
 
     chead VDPREGISTERWRITE, 4, VDP#
+        di
         ; VDP address (register index) is TOS
         ld a, c
         or $80 ; this bit indicates "write"
@@ -179,6 +180,7 @@
         out (VDP_REGISTERS), a
 
         pop bc ; pop new tos
+        ei
         next
 
     chead VDPSTATUSREAD, 4, VDP$
