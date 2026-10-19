@@ -214,6 +214,7 @@
     head SPRITEATTRIBPTR, 6, SPRPTR, docolon
         ; Calculate offset into VDP memory for a sprite's
         ; attribute data, based on the index
+        ; TODO: this might be faster to do with shifts? is there a convenience function?
         dw LIT, 4, STAR, VDPSPRITEATTRIBS, PLUS
         dw EXIT
 
@@ -236,7 +237,7 @@
     head SPRITEPATTERNSET, 7, SPRPAT!, docolon
         dw SPRITEATTRIBPTR
         ; pattern index is third index
-        dw 2, LIT, PLUS
+        dw LIT, 2, PLUS
         dw VDPWRITE
         dw EXIT
 
@@ -244,10 +245,10 @@
     head SPRITECOLOURSET, 7, SPRCOL!, docolon
         dw SPRITEATTRIBPTR
         ; colour index is fourth index
-        dw 3, LIT, PLUS
+        dw LIT, 3, PLUS
         dw VDPWRITE
         dw EXIT
-        
+
     chead PSGDATASET, 8, PSGDATA2
         ; load the remaining 6 bits of PSG data
         ; do not use this on its own!
