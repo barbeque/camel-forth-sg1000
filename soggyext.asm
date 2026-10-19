@@ -218,17 +218,17 @@
         dw LIT, 4, STAR, VDPSPRITEATTRIBS, PLUS
         dw EXIT
 
-    ; SPRX! set X-coordinate of a sprite
-    head SPRITEXSET, 5, SPRX!, docolon
-        dw SPRITEATTRIBPTR
-        ; X-coordinate is first index, so don't add, just call
-        dw VDPWRITE
-        dw EXIT
-
     ; SPRY! set Y-coordinate of a sprite
     head SPRITEYSET, 5, SPRY!, docolon
         dw SPRITEATTRIBPTR
-        ; Y-coordinate is second index
+        ; Y-coordinate is first index, so don't add, just call
+        dw VDPWRITE
+        dw EXIT
+
+    ; SPRX! set X-coordinate of a sprite
+    head SPRITEXSET, 5, SPRX!, docolon
+        dw SPRITEATTRIBPTR
+        ; X-coordinate is second index
         dw ONEPLUS
         dw VDPWRITE
         dw EXIT
@@ -246,6 +246,14 @@
         dw SPRITEATTRIBPTR
         ; colour index is fourth index
         dw LIT, 3, PLUS
+        dw VDPWRITE
+        dw EXIT
+
+    head SPRITEROWLOAD, 7, SPRROW!, docolon
+        ; ( data row idx -- )
+        ; Don't call this directly...
+        dw LIT, 8, STAR, VDPSPRITEPATTERNS, PLUS
+        dw PLUS ; Add row
         dw VDPWRITE
         dw EXIT
 
