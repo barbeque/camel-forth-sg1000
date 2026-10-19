@@ -135,6 +135,32 @@
     head TONE2SET, 5, TONE2, docolon
         dw LIT, 2, PSGTONESET, EXIT
 
+    ; Just set the address of the VDP, don't do anything else
+    ; Do not use interactively, the latch will change
+    ; when the console updates.
+    ; ( addr -- )
+    chead VDPADDRSET, 4, VDP[
+        ; Set address from BC (TOS)
+        ld a, c
+        out (VDP_REGISTERS), a
+        ld a, b
+        or 64 ; set write bit
+        out (VDP_REGISTERS), a
+        pop bc
+        next
+    
+    ; Write directly to the VDP port without
+    ; setting address. Do not use interactively,
+    ; the console updating will reset the address
+    ; latch.
+    ; ( data -- )
+    chead VDPDATASET, 4, VDP<
+        ld a, c
+        out (VDP_DATA), a
+        pop bc
+        next
+
+    ; Write to VDP ( data addr -- )
     chead VDPWRITE, 4, VDP!
         ; Set address from BC (TOS)
         ld a, c
@@ -150,6 +176,7 @@
         pop bc ; pop new tos
         next
 
+    ; Read from VDP ( addr -- )
     chead VDPREAD, 4, VDP@
         ; Set address from BC (TOS)
         ld a, c
@@ -162,6 +189,8 @@
         pop bc ; pop new tos
         next
 
+    ; Write to a control register of the VDP.
+    ; (data row -- )
     chead VDPREGISTERWRITE, 4, VDP#
         di
         ; VDP address (register index) is TOS
@@ -254,18 +283,31 @@
         ; Don't call this directly...
         dw LIT, 8, STAR, VDPSPRITEPATTERNS, PLUS
         dw PLUS ; Add row
-        dw VDPWRITE
+        dw VDPWRITE ; Latch address, send data
         dw EXIT
 
     head SPRITEPATLOAD, 7, SPRLOAD, docolon
         ; (d7 d6 d5 d4 d3 d2 d1 d0 idx -- )
         
-        dw LIT, 8, LIT, 0, DO, SWOP, OVER, SPRITEROWLOAD
-        dw DROP ; drop the last index
+        ; Set address once and then just blast data for the rest?
+        ; Address autoincrements on TMS9918 after a write.
+        dw LIT, 8, STAR, VDPSPRITEPATTERNS, PLUS
+        dw VDPWRITE
+
+        ; write remaining 7 rows now that we have address latched
+        dw VDPDATASET
+        dw VDPDATASET
+        dw VDPDATASET
+        dw VDPDATASET
+        dw VDPDATASET
+        dw VDPDATASET
+        dw VDPDATASET ; HACK
+        
         dw EXIT
 
     head SPRITESMILEY, 8, SPRSMILE, docolon
-        dw LIT, $3c, LIT, $42, LIT, $a5, LIT, $81, LIT, $a5, LIT, $99, LIT, $42, LIT, $3c, EXIT
+        ; TODO: May be upside down...
+        dw LIT, $3c, LIT, $42, LIT, $99, LIT, $a5, LIT, $81, LIT, $a5, LIT, $42, LIT, $3c, EXIT
 
     chead PSGDATASET, 8, PSGDATA2
         ; load the remaining 6 bits of PSG data
