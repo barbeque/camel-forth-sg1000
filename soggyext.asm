@@ -257,6 +257,13 @@
         dw VDPWRITE
         dw EXIT
 
+    head SPRITEPATLOAD, 7, SPRLOAD, docolon
+        ; (d7 d6 d5 d4 d3 d2 d1 d0 idx -- )
+        
+        dw LIT, 8, LIT, 0, DO, SWOP, OVER, SPRITEROWLOAD
+        dw DROP ; drop the last index
+        dw EXIT
+
     chead PSGDATASET, 8, PSGDATA2
         ; load the remaining 6 bits of PSG data
         ; do not use this on its own!
