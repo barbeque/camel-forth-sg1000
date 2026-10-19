@@ -183,6 +183,8 @@
         ei
         next
 
+    ; TODO: Convenience word for enabling sprites?
+
     chead VDPSTATUSREAD, 4, VDP$
         ; no arguments necessary, it's a straight read
         in a, (VDP_REGISTERS)
@@ -208,6 +210,44 @@
     head VDPSPRITEPATTERNS, 17, VDPSPRITEPATTERNS, docolon
         dw LIT, SPRITE_PATTERNS_BASE, EXIT
 
+    ; Sprite attribute words
+    head SPRITEATTRIBPTR, 6, SPRPTR, docolon
+        ; Calculate offset into VDP memory for a sprite's
+        ; attribute data, based on the index
+        dw LIT, 4, STAR, VDPSPRITEATTRIBS, PLUS
+        dw EXIT
+
+    ; SPRX! set X-coordinate of a sprite
+    head SPRITEXSET, 5, SPRX!, docolon
+        dw SPRITEATTRIBPTR
+        ; X-coordinate is first index, so don't add, just call
+        dw VDPWRITE
+        dw EXIT
+
+    ; SPRY! set Y-coordinate of a sprite
+    head SPRITEYSET, 5, SPRY!, docolon
+        dw SPRITEATTRIBPTR
+        ; Y-coordinate is second index
+        dw ONEPLUS
+        dw VDPWRITE
+        dw EXIT
+
+    ; SPRPAT! set pattern index of a sprite
+    head SPRITEPATTERNSET, 7, SPRPAT!, docolon
+        dw SPRITEATTRIBPTR
+        ; pattern index is third index
+        dw 2, LIT, PLUS
+        dw VDPWRITE
+        dw EXIT
+
+    ; SPRCOL! set colour of a sprite
+    head SPRITECOLOURSET, 7, SPRCOL!, docolon
+        dw SPRITEATTRIBPTR
+        ; colour index is fourth index
+        dw 3, LIT, PLUS
+        dw VDPWRITE
+        dw EXIT
+        
     chead PSGDATASET, 8, PSGDATA2
         ; load the remaining 6 bits of PSG data
         ; do not use this on its own!
