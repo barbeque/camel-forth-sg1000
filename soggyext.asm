@@ -264,6 +264,9 @@
         dw DROP ; drop the last index
         dw EXIT
 
+    head SPRITESMILEY, 8, SPRSMILE, docolon
+        dw LIT, $3c, LIT, $42, LIT, $a5, LIT, $81, LIT, $a5, LIT, $99, LIT, $42, LIT, $3c, EXIT
+
     chead PSGDATASET, 8, PSGDATA2
         ; load the remaining 6 bits of PSG data
         ; do not use this on its own!
