@@ -139,7 +139,7 @@
     ; Do not use interactively, the latch will change
     ; when the console updates.
     ; ( addr -- )
-    chead VDPADDRSET, 4, VDP[
+    chead VDPADDRSET, 4, >VDP
         ; Set address from BC (TOS)
         ld a, c
         out (VDP_REGISTERS), a
