@@ -1,4 +1,6 @@
  - [x] Reset vector
+ - [ ] Stack clearing bug with `5 5 5 ok . . .`
+ - [ ] Detect stack underflow
  - [ ] Alternative warm reset path so it doesn't lose all memory
  - [x] VDP working in emulator
  - [x] VDP bringup timer
@@ -23,7 +25,7 @@
  - [x] Handle newline in Emit
 	- [x] Find next column 0? Multiple of 32?
  - [x] Fix the "dropped first character" bug when rolling
- - [ ] Get rid of carriage return (\r, $0d) from code calling Emit
+ - [x] Get rid of carriage return (\r, $0d) from code calling Emit (just ignore it)
  - [x] `docode` ifdef not working in pass1?
  - [x] words with commas in them (e.g. `COMPILE,`)
  - [x] words with quotes in them (e.g. S")
@@ -34,6 +36,7 @@
 	- [x] Set Soggy-1000 paging
 	- [x] Set stack pointer (what are they trying to do?)
 	- [x] Zero appropriate amount of memory on startup
+	- [ ] Is there a way to determine free RAM at runtime?
 	- [ ] If Soggy identified, print console message
  - [x] Enddict -> starting ram address
 	- [x] Fix the compile error for that

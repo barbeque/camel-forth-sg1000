@@ -24,7 +24,7 @@ pad: camel80.sc
 	python3 ./prepare.py -s 256 camel80.sc
 
 burn: pad camel80.padded.bin
-	minipro -p MX27C256@DIP28 -w camel80.padded.bin
+	minipro -p M27C256B@DIP28 -w camel80.padded.bin
 
 clean:
 	rm -rf camel80.sc
