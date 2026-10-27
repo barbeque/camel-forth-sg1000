@@ -512,8 +512,6 @@ _rollup_end:
     chead EMIT,4,EMIT
         ; do i need to drop? i must, right?
 
-        push hl
-        
         ld hl, (INSERTION_POINT)
 
         ld a, c
@@ -607,7 +605,6 @@ _emit_rolled_off_end:
 _emit_store_insert:
         ld (INSERTION_POINT), hl
 _emit_exit:
-        pop hl ; restore hl since camelforth uses it
         pop bc ; DROP
         next
 
