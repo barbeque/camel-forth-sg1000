@@ -513,7 +513,7 @@ _rollup_end:
         ; do i need to drop? i must, right?
 
         push hl
-        push bc
+        
         ld hl, (INSERTION_POINT)
 
         ld a, c
@@ -548,8 +548,11 @@ _check_for_newline:
         jr nz, _not_newline
 
 _newline_find_new_insertion_point:
+        push bc
         ld bc, 32
         adc hl, bc ; jump hl ahead by one line (32 columns) from its current position
+        pop bc
+
         ld a, l ; load the lower byte of hl
         and 0b11100000 ; mask off everything that is less than a multiple of 32
         ld l, a
@@ -562,9 +565,13 @@ _newline_find_new_insertion_point:
 _not_newline:
 
 _set_write_address:
-        call SetVDPWriteAddress ; inefficient but...
-        pop bc
-
+        ; HL = address now
+        ld a, l
+        out (VDP_REGISTERS), a
+        ld a, h
+        add 64 ; set write bit
+        out (VDP_REGISTERS), a
+        
         ; pull in the argument to EMIT
         ld a, c
 
