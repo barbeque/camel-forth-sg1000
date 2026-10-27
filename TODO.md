@@ -1,5 +1,5 @@
  - [x] Reset vector
- - [ ] Stack clearing bug with `5 5 5 ok . . .`
+ - [x] Stack clearing bug with `5 5 5 ok . . .`
  - [ ] Detect stack underflow
  - [ ] Alternative warm reset path so it doesn't lose all memory
  - [x] VDP working in emulator
@@ -53,6 +53,7 @@
 	- [x] Why is pushing 1 resetting the computer? (STILL?)
     - [x] Why isn't backspace working on scanner code?
     - [x] Figure out the "double key" on the shifted keyboard
+    - [ ] Improve debounce on real keyboard
     - [ ] Find a typeface for Kana characters
     - [ ] Find a typeface for Graph characters
     - [ ] Decide on a combination character set (is there enough space?)
