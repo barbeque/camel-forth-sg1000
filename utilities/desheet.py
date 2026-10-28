@@ -68,6 +68,9 @@ buf = ''
 # it's not the efficient way but we're on a deadline.
 def forth_mapify(tms9918_rows) -> list[str]:
     assert(len(tms9918_rows) == 8)
+
+    # Reverse it since we're going to feed it into the stack.
+    tms9918_rows = list(reversed(tms9918_rows))
     out = []
     for i in range(len(tms9918_rows)):
         out.append('LIT')
@@ -84,7 +87,7 @@ for i in range(number_of_sprites):
     sprite_3 = sheet.crop((x_start + 8, 0, x_start + 16, 8))
     sprite_4 = sheet.crop((x_start + 8, 8, x_start + 16, 16))
 
-    buf = buf + f'    head PUMPKIN{i}, {len(f'PUMPKIN{i}')}, PUMPKIN{i}, docolon\n\tDW '
+    buf = buf + f'    head PUMPKIN{i}, {9 if i >= 10 else 8}, PUMPKIN{i}, docolon\n\tDW '
 
     out_rows = []
     out_rows += forth_mapify(to_tms9918_rows(sprite_1))
