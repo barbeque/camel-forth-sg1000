@@ -184,6 +184,9 @@
         ld a, b
         out (VDP_REGISTERS), a
 
+        nop
+        nop ; won't matter to MAME but will probably matter to real hardware
+
         in a, (VDP_DATA)
 
         pop bc ; pop new tos

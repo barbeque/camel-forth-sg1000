@@ -43,7 +43,6 @@
     ; 48 -> 0
     chead NEXTPUMPFRAME, 7, NPUMPKIN
 #local
-        ld b, 0
         ld a, c
         cp a, 44
         jr z, start_over
@@ -54,11 +53,13 @@ step:
 start_over:
         ld c, 0
 all_done:
+        ld b, 0 ; for insurance
 #endlocal
         next
 
     ; Advance a pumpkin at sprite index to the next frame,
     ; wrapping around if necessary
+    ; ( sprite_idx -- )
     head STEPPUMP, 8, STEPPUMP, docolon
         dw DUP ; make sure the index sticks around
         dw SPRITEPATGET ; now TOS = the sprite pattern number
@@ -74,6 +75,25 @@ all_done:
         dw LIT, 2, PLUS ; pattern number is 3rd item
         dw VDPREAD
         dw EXIT
+
+    head DANCE, 5, DANCE, docolon
+        dw BEGIN
+        dw LIT, 0, STEPPUMP
+        dw PAUSE
+        dw REPEAT
+        dw EXIT
+
+    ; Busy-wait for the animation
+    chead PAUSE, 5, PAUSE
+        ld hl, $1337
+#local
+_busywait_inner:
+        dec hl
+        ld a,h
+        or l
+        jr nz, _busywait_inner
+#endlocal
+        next
 
     ; Get the VDP memory address for sprite patterns for a 16x16 sprite
     ; ( sprite_idx -- )
@@ -98,8 +118,6 @@ all_done:
         ; Address autoincrements on TMS9918 after a write.
         dw SPRPATADDR16
         dw VDPWRITE
-
-        ; TODO: Why is this not loading all the rows?
 
         ; write remaining 31 rows now that we have address latched
         .rept 31
