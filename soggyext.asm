@@ -311,9 +311,9 @@
 
     ; Set the "SI" bit of the TMS9918 registers, enabling
     ; 16x16 sprites made up of four 8x8 tiles
-    head METATILESPRITESET, 7, BIGSPR!
-        dw lit, %11000010
-        dw lit 1, VDPREGISTERWRITE
+    head METATILESPRITESET, 7, BIGSPR!, docolon
+        dw LIT, %11000010
+        dw LIT, 1, VDPREGISTERWRITE
         dw EXIT
 
     chead PSGDATASET, 8, PSGDATA2

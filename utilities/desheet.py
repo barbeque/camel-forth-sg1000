@@ -43,7 +43,7 @@ def to_tms9918_rows(cropped : Image.Image) -> bytes:
     # I'm so glad aseprite uses indexed mode for PNG
     PALETTE = {
         0: 0,
-        1: 0, # black
+        1: 1, # black (set this to 1 for the 'shadow' sprite)
         5: 0xff # orange
     }
 
