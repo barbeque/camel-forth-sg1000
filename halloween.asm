@@ -1,12 +1,12 @@
-    macro newpump #index
+    macro newpump #index, #x, #y
         ; Configure the pumpkin to appear (sprite 2)
-        dw LIT, 0x65, LIT, #index, SPRITEXSET
-        dw LIT, 0x65, LIT, #index, SPRITEYSET
+        dw LIT, #x, LIT, #index, SPRITEXSET
+        dw LIT, #y, LIT, #index, SPRITEYSET
         dw LIT, 0x0a, LIT, #index, SPRITECOLOURSET
         dw LIT, 0, LIT, #index, SPRITEPATTERNSET ; 0 x 4
         ; Configure the shadow to appear (sprite 3)
-        dw LIT, 0x65, LIT, #index + 1, SPRITEXSET
-        dw LIT, 0x65, LIT, #index + 1, SPRITEYSET
+        dw LIT, #x, LIT, #index + 1, SPRITEXSET
+        dw LIT, #y, LIT, #index + 1, SPRITEYSET
         dw LIT, 0x01, LIT, #index + 1 , SPRITECOLOURSET
         dw LIT, 48, LIT, #index + 1, SPRITEPATTERNSET ; 12 x 4
     endm
@@ -30,10 +30,10 @@
         dw PUMPKINSHADOW, LIT, 12, SPRITEPATLOAD16
         
         ; Set up some pumpkin sprites at n (body) and n+1 (shadow)
-        newpump 0
-        newpump 2
-        newpump 4
-        newpump 6
+        newpump 0, $55, $55
+        newpump 2, $65, $65
+        newpump 4, $75, $75
+        newpump 6, $85, $85
 
         dw EXIT
 
