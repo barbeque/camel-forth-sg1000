@@ -43,7 +43,7 @@ def to_tms9918_rows(cropped : Image.Image) -> bytes:
     # I'm so glad aseprite uses indexed mode for PNG
     PALETTE = {
         0: 0,
-        1: 0, # black (set this to 1 for the 'shadow' sprite)
+        1: 1, # black (set this to 1 for the 'shadow' sprite)
         5: 0xff # orange
     }
 
@@ -70,7 +70,7 @@ def forth_mapify(tms9918_rows) -> list[str]:
     assert(len(tms9918_rows) == 8)
 
     # Reverse it since we're going to feed it into the stack.
-    tms9918_rows = list((tms9918_rows))
+    tms9918_rows = list(reversed(tms9918_rows))
     out = []
     for i in range(len(tms9918_rows)):
         out.append('LIT')
@@ -91,10 +91,11 @@ for i in range(number_of_sprites):
 
     out_rows = []
 
-    out_rows += forth_mapify(to_tms9918_rows(sprite_3))
     out_rows += forth_mapify(to_tms9918_rows(sprite_4))
-    out_rows += forth_mapify(to_tms9918_rows(sprite_1))
+    out_rows += forth_mapify(to_tms9918_rows(sprite_3))
     out_rows += forth_mapify(to_tms9918_rows(sprite_2))
+    out_rows += forth_mapify(to_tms9918_rows(sprite_1))
+    
     
 
     assert(len(out_rows) == 64)
