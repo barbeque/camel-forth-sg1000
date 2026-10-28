@@ -187,6 +187,10 @@
         in a, (VDP_DATA)
 
         pop bc ; pop new tos
+
+        ; push the value we just got on the stack
+        ld c, a
+        ld b, 0
         next
 
     ; Write to a control register of the VDP.

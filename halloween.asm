@@ -37,6 +37,18 @@
 
         dw EXIT
 
+    ; Advance a pumpkin at sprite index to the next frame,
+    ; wrapping around if necessary
+    head STEPPUMP, 8, STEPPUMP, docolon
+        
+    ; Get the current pattern of a sprite
+    ; ( sprite_idx -- pattern_idx )
+    head GETSPRITEFRAME, 9, SPRFRAME@, docolon
+        dw SPRITEATTRIBPTR
+        dw LIT, 2, PLUS ; pattern number is 3rd item
+        dw VDPREAD
+        dw EXIT
+
     ; Get the VDP memory address for sprite patterns for a 16x16 sprite
     ; ( sprite_idx -- )
     head SPRPATADDR16, 9, SPRADDR16, docolon
