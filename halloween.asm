@@ -3,11 +3,33 @@
         dw METATILESPRITESET
         ; Load the pumpkin sprite pattern data into VRAM
         dw PUMPKIN0, LIT, 0, SPRITEPATLOAD16
-        ; Configure the pumpkin to appear
-        dw LIT, 0x55, LIT, 0, SPRITEXSET16
-        dw LIT, 0x55, LIT, 0, SPRITEYSET16
-        dw LIT, 0x0a, LIT, 0, SPRITECOLOURSET16
-        dw LIT, 0, LIT, 0, SPRITEPATTERNSET16
+        dw PUMPKIN1, LIT, 1, SPRITEPATLOAD16
+        dw PUMPKIN2, LIT, 2, SPRITEPATLOAD16
+        dw PUMPKIN3, LIT, 3, SPRITEPATLOAD16
+        dw PUMPKIN4, LIT, 4, SPRITEPATLOAD16
+        dw PUMPKIN5, LIT, 5, SPRITEPATLOAD16
+        dw PUMPKIN6, LIT, 6, SPRITEPATLOAD16
+        dw PUMPKIN7, LIT, 7, SPRITEPATLOAD16
+        dw PUMPKIN8, LIT, 8, SPRITEPATLOAD16
+        dw PUMPKIN9, LIT, 9, SPRITEPATLOAD16
+        dw PUMPKIN10, LIT, 10, SPRITEPATLOAD16
+        dw PUMPKIN11, LIT, 11, SPRITEPATLOAD16
+        dw PUMPKINSHADOW, LIT, 12, SPRITEPATLOAD16
+        ; Configure the pumpkin to appear (sprite 0)
+        dw LIT, 0x55, LIT, 0, SPRITEXSET
+        dw LIT, 0x55, LIT, 0, SPRITEYSET
+        dw LIT, 0x0a, LIT, 0, SPRITECOLOURSET
+        dw LIT, 0, LIT, 0, SPRITEPATTERNSET ; 0 x 4
+        ; Configure the shadow to appear (sprite 0)
+        dw LIT, 0x55, LIT, 1, SPRITEXSET
+        dw LIT, 0x55, LIT, 1, SPRITEYSET
+        dw LIT, 0x01, LIT, 1, SPRITECOLOURSET
+        dw LIT, 48, LIT, 1, SPRITEPATTERNSET ; 12 x 4
+        ; Configure the shadow to appear (sprite 0)
+        ;dw LIT, 0x58, LIT, 0, SPRITEXSET16
+        ;dw LIT, 0x58, LIT, 0, SPRITEYSET16
+        ;dw LIT, 0x01, LIT, 0, SPRITECOLOURSET16
+        ;dw LIT, 12, LIT, 0, SPRITEPATTERNSET16
         dw EXIT
 
     ; Get the VDP memory address for sprite patterns for a 16x16 sprite
@@ -77,7 +99,7 @@
 ; Sprite definitions
 ; Sorry they're so wasteful. I'm sure there's an easier way to read memory
 ; and put all the values on the stack, but I'm out of time.
-        head PUMPKIN0, 8, PUMPKIN0, docolon
+    head PUMPKIN0, 8, PUMPKIN0, docolon
 	DW LIT, $f8, LIT, $fc, LIT, $4e, LIT, $0f, LIT, $27, LIT, $ff, LIT, $ff, LIT, $cf, LIT, $cf, LIT, $cf, LIT, $ef, LIT, $ff, LIT, $fe, LIT, $3c, LIT, $00, LIT, $00, LIT, $1f, LIT, $3f, LIT, $72, LIT, $f0, LIT, $e4, LIT, $ff, LIT, $ff, LIT, $f3, LIT, $f3, LIT, $f3, LIT, $f7, LIT, $ff, LIT, $7f, LIT, $3c, LIT, $00, LIT, $00, EXIT
     head PUMPKIN1, 8, PUMPKIN1, docolon
 	DW LIT, $f8, LIT, $fc, LIT, $3e, LIT, $3f, LIT, $9f, LIT, $ff, LIT, $ff, LIT, $3f, LIT, $3f, LIT, $3f, LIT, $bf, LIT, $ff, LIT, $fe, LIT, $3c, LIT, $00, LIT, $00, LIT, $1f, LIT, $3f, LIT, $49, LIT, $c0, LIT, $90, LIT, $ff, LIT, $ff, LIT, $cf, LIT, $cf, LIT, $cf, LIT, $df, LIT, $ff, LIT, $7f, LIT, $3c, LIT, $00, LIT, $00, EXIT
