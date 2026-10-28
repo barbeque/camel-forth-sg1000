@@ -11,7 +11,7 @@
         dw LIT, 48, LIT, #index + 1, SPRITEPATTERNSET ; 12 x 4
     endm
 
-    head PUMPTEST, 8, PUMPTEST, docolon
+    head PUMPKINS, 8, PUMPKINS, docolon
         ; Enable metatile (16x16) sprites
         dw METATILESPRITESET
         ; Load the pumpkin sprite pattern data into VRAM
@@ -39,6 +39,16 @@
         dw LIT, 4, LIT, 2, SPRITEPATTERNSET ; 1 x 4
         dw LIT, 8, LIT, 4, SPRITEPATTERNSET ; 2 x 4
         dw LIT, 12, LIT, 6, SPRITEPATTERNSET ; 3 x 4
+
+        DW XSQUOTE
+        DB 17,'Happy Halloween!'
+        DB 0ah
+        DW TYPE
+
+        ; start dancing
+_dance_entry:
+        dw DANCE
+        dw qbranch, _dance_entry
 
         dw EXIT
 
@@ -68,9 +78,6 @@ all_done:
     head STEPPUMP, 8, STEPPUMP, docolon
         dw TWODUP ; make sure the index sticks around
         dw SPRITEPATGET ; now TOS = the sprite pattern number
-
-        ; this works so far...
-
         dw NEXTPUMPFRAME ; TOS = the NEW sprite pattern number
         dw SWOP ; put it back in {pattern} {index} order
         dw SPRITEPATTERNSET
@@ -84,16 +91,18 @@ all_done:
         dw VDPREAD
         dw EXIT
 
+    ; Do a single dance step
     head DANCE, 5, DANCE, docolon
-        dw BEGIN
         dw LIT, 0, STEPPUMP
+        dw LIT, 2, STEPPUMP
+        dw LIT, 4, STEPPUMP
+        dw LIT, 6, STEPPUMP
         dw PAUSE
-        dw REPEAT
         dw EXIT
 
     ; Busy-wait for the animation
     chead PAUSE, 5, PAUSE
-        ld hl, $1337
+        ld hl, $3333
 #local
 _busywait_inner:
         dec hl
