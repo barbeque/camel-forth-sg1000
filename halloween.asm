@@ -1,3 +1,21 @@
+head SPRITEPATLOAD16, 9, SPRLOAD16, docolon
+        ; (d15 .. d7 d6 d5 d4 d3 d2 d1 d0 idx -- )
+        
+        ; Set address once and then just blast data for the rest?
+        ; Address autoincrements on TMS9918 after a write.
+        
+        ; for 16x16, use (pattern AND 252) times 8 + start of pattern memory
+        dw LIT, 252, AND, LIT, 8, STAR
+        dw VDPSPRITEPATTERNS, PLUS
+        dw VDPWRITE
+
+        ; write remaining 15 rows now that we have address latched
+        .rept 15
+        dw VDPDATASET ; HACK
+        .endm
+        
+        dw EXIT
+
 PUMPKIN0: db $00, $00, $3c, $7f, $ff, $f7, $f3, $f3, $f3, $ff, $ff, $e4, $f0, $72, $3f, $1f, $00, $00, $3c, $fe, $ff, $ef, $cf, $cf, $cf, $ff, $ff, $27, $0f, $4e, $fc, $f8
 PUMPKIN1: db $00, $00, $3c, $7f, $ff, $df, $cf, $cf, $cf, $ff, $ff, $90, $c0, $49, $3f, $1f, $00, $00, $3c, $fe, $ff, $bf, $3f, $3f, $3f, $ff, $ff, $9f, $3f, $3e, $fc, $f8
 PUMPKIN2: db $00, $00, $3c, $7f, $ff, $7e, $3c, $3c, $3c, $ff, $ff, $42, $00, $24, $3f, $1f, $00, $00, $3c, $fe, $ff, $ff, $ff, $ff, $ff, $ff, $ff, $7f, $ff, $fe, $fc, $f8
