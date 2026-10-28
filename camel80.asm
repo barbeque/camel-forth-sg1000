@@ -1553,6 +1553,8 @@ snext:  next
 #include "camel80h.asm"   ; High Level words
 #include "soggyext.asm"   ; Soggy-specific words
 
+#include "halloween.asm"   ; Halloween demo
+
 lastword EQU link   ; nfa of last word in dict.
 enddict: EQU END_OF_SYSTEM_RAM ; user's code starts here
         END

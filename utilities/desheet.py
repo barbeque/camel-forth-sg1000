@@ -84,7 +84,7 @@ for i in range(number_of_sprites):
     sprite_3 = sheet.crop((x_start + 8, 0, x_start + 16, 8))
     sprite_4 = sheet.crop((x_start + 8, 8, x_start + 16, 16))
 
-    buf = buf + f'    head PUMPKIN{i}, 8, PUMPKIN{i}, docolon\n\tDW '
+    buf = buf + f'    head PUMPKIN{i}, {len(f'PUMPKIN{i}')}, PUMPKIN{i}, docolon\n\tDW '
 
     out_rows = []
     out_rows += forth_mapify(to_tms9918_rows(sprite_1))
