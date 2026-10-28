@@ -309,6 +309,13 @@
         ; TODO: May be upside down...
         dw LIT, $3c, LIT, $42, LIT, $99, LIT, $a5, LIT, $81, LIT, $a5, LIT, $42, LIT, $3c, EXIT
 
+    ; Set the "SI" bit of the TMS9918 registers, enabling
+    ; 16x16 sprites made up of four 8x8 tiles
+    head METATILESPRITESET, 7, BIGSPR!
+        dw lit, %11000010
+        dw lit 1, VDPREGISTERWRITE
+        dw EXIT
+
     chead PSGDATASET, 8, PSGDATA2
         ; load the remaining 6 bits of PSG data
         ; do not use this on its own!
