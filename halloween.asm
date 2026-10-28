@@ -1,3 +1,16 @@
+    macro newpump #index
+        ; Configure the pumpkin to appear (sprite 2)
+        dw LIT, 0x65, LIT, #index, SPRITEXSET
+        dw LIT, 0x65, LIT, #index, SPRITEYSET
+        dw LIT, 0x0a, LIT, #index, SPRITECOLOURSET
+        dw LIT, 0, LIT, #index, SPRITEPATTERNSET ; 0 x 4
+        ; Configure the shadow to appear (sprite 3)
+        dw LIT, 0x65, LIT, #index + 1, SPRITEXSET
+        dw LIT, 0x65, LIT, #index + 1, SPRITEYSET
+        dw LIT, 0x01, LIT, #index + 1 , SPRITECOLOURSET
+        dw LIT, 48, LIT, #index + 1, SPRITEPATTERNSET ; 12 x 4
+    endm
+
     head PUMPTEST, 8, PUMPTEST, docolon
         ; Enable metatile (16x16) sprites
         dw METATILESPRITESET
@@ -15,21 +28,13 @@
         dw PUMPKIN10, LIT, 10, SPRITEPATLOAD16
         dw PUMPKIN11, LIT, 11, SPRITEPATLOAD16
         dw PUMPKINSHADOW, LIT, 12, SPRITEPATLOAD16
-        ; Configure the pumpkin to appear (sprite 0)
-        dw LIT, 0x55, LIT, 0, SPRITEXSET
-        dw LIT, 0x55, LIT, 0, SPRITEYSET
-        dw LIT, 0x0a, LIT, 0, SPRITECOLOURSET
-        dw LIT, 0, LIT, 0, SPRITEPATTERNSET ; 0 x 4
-        ; Configure the shadow to appear (sprite 0)
-        dw LIT, 0x55, LIT, 1, SPRITEXSET
-        dw LIT, 0x55, LIT, 1, SPRITEYSET
-        dw LIT, 0x01, LIT, 1, SPRITECOLOURSET
-        dw LIT, 48, LIT, 1, SPRITEPATTERNSET ; 12 x 4
-        ; Configure the shadow to appear (sprite 0)
-        ;dw LIT, 0x58, LIT, 0, SPRITEXSET16
-        ;dw LIT, 0x58, LIT, 0, SPRITEYSET16
-        ;dw LIT, 0x01, LIT, 0, SPRITECOLOURSET16
-        ;dw LIT, 12, LIT, 0, SPRITEPATTERNSET16
+        
+        ; Set up some pumpkin sprites at n (body) and n+1 (shadow)
+        newpump 0
+        newpump 2
+        newpump 4
+        newpump 6
+
         dw EXIT
 
     ; Get the VDP memory address for sprite patterns for a 16x16 sprite
@@ -63,37 +68,6 @@
         dw VDPDATASET ; HACK
         .endm
         
-        dw EXIT
-
-    ; SPRY! set Y-coordinate of a sprite
-    head SPRITEYSET16, 7, SPRY16!, docolon
-        dw SPRITEATTRIBPTR16
-        ; Y-coordinate is first index, so don't add, just call
-        dw VDPWRITE
-        dw EXIT
-
-    ; SPRX! set X-coordinate of a sprite
-    head SPRITEXSET16, 7, SPRX16!, docolon
-        dw SPRITEATTRIBPTR16
-        ; X-coordinate is second index
-        dw ONEPLUS
-        dw VDPWRITE
-        dw EXIT
-
-    ; SPRPAT! set pattern index of a sprite
-    head SPRITEPATTERNSET16, 9, SPRPAT16!, docolon
-        dw SPRITEATTRIBPTR16
-        ; pattern index is third index
-        dw LIT, 2, PLUS
-        dw VDPWRITE
-        dw EXIT
-
-    ; SPRCOL! set colour of a sprite
-    head SPRITECOLOURSET16, 9, SPRCOL16!, docolon
-        dw SPRITEATTRIBPTR16
-        ; colour index is fourth index
-        dw LIT, 3, PLUS
-        dw VDPWRITE
         dw EXIT
 
 ; Sprite definitions
