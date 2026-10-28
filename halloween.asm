@@ -35,6 +35,11 @@
         newpump 4, $75, $75
         newpump 6, $85, $85
 
+        ; start the pumpkins off at different frames
+        dw LIT, 4, LIT, 2, SPRITEPATTERNSET ; 1 x 4
+        dw LIT, 8, LIT, 4, SPRITEPATTERNSET ; 2 x 4
+        dw LIT, 12, LIT, 6, SPRITEPATTERNSET ; 3 x 4
+
         dw EXIT
 
     ; Get the next pattern for a pumpkin after the current one
@@ -61,8 +66,11 @@ all_done:
     ; wrapping around if necessary
     ; ( sprite_idx -- )
     head STEPPUMP, 8, STEPPUMP, docolon
-        dw DUP ; make sure the index sticks around
+        dw TWODUP ; make sure the index sticks around
         dw SPRITEPATGET ; now TOS = the sprite pattern number
+
+        ; this works so far...
+
         dw NEXTPUMPFRAME ; TOS = the NEW sprite pattern number
         dw SWOP ; put it back in {pattern} {index} order
         dw SPRITEPATTERNSET
