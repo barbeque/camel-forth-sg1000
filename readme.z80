@@ -4,7 +4,8 @@ This is a port of CamelForth/80 to the Sega SG-1000/Sega SC-3000 line of home co
 
 Current major outstanding issue list is as follows:
 
- - [ ] Awaiting test on real hardware
+ - [x] Awaiting test on real hardware
+ - [ ] All words lost on reset
  - [ ] Does not work in ares
 
 For a full issue list, check TODO.md
