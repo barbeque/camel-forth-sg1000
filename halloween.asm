@@ -37,13 +37,39 @@
 
         dw EXIT
 
+    ; Get the next pattern for a pumpkin after the current one
+    ; ( frame -- frame )
+    ; 0 -> 4, 4 -> 8, etc.
+    ; 48 -> 0
+    chead NEXTPUMPFRAME, 7, NPUMPKIN
+#local
+        ld b, 0
+        ld a, c
+        cp a, 44
+        jr z, start_over
+step:
+        add 4
+        ld c, a
+        jr all_done
+start_over:
+        ld c, 0
+all_done:
+#endlocal
+        next
+
     ; Advance a pumpkin at sprite index to the next frame,
     ; wrapping around if necessary
     head STEPPUMP, 8, STEPPUMP, docolon
+        dw DUP ; make sure the index sticks around
+        dw SPRITEPATGET ; now TOS = the sprite pattern number
+        dw NEXTPUMPFRAME ; TOS = the NEW sprite pattern number
+        dw SWOP ; put it back in {pattern} {index} order
+        dw SPRITEPATTERNSET
+        dw EXIT
         
     ; Get the current pattern of a sprite
     ; ( sprite_idx -- pattern_idx )
-    head GETSPRITEFRAME, 9, SPRFRAME@, docolon
+    head SPRITEPATGET, 7, SPRPAT@, docolon
         dw SPRITEATTRIBPTR
         dw LIT, 2, PLUS ; pattern number is 3rd item
         dw VDPREAD
