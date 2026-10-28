@@ -64,6 +64,16 @@ def to_tms9918_rows(cropped : Image.Image) -> bytes:
 
 buf = ''
 
+# go from a $00, $01, $02 to dw LIT, $00, LIT, $01, LIT, $02...
+# it's not the efficient way but we're on a deadline.
+def forth_mapify(tms9918_rows) -> list[str]:
+    assert(len(tms9918_rows) == 8)
+    out = []
+    for i in range(len(tms9918_rows)):
+        out.append('LIT')
+        out.append(to_hex(tms9918_rows[i]))
+    return out
+
 for i in range(number_of_sprites):
     x_start = i * 16
     # Tiles go like this
@@ -74,17 +84,17 @@ for i in range(number_of_sprites):
     sprite_3 = sheet.crop((x_start + 8, 0, x_start + 16, 8))
     sprite_4 = sheet.crop((x_start + 8, 8, x_start + 16, 16))
 
-    buf = buf + f'METASPRITE{i}: db '
+    buf = buf + f'    head PUMPKIN{i}, 8, PUMPKIN{i}, docolon\n\tDW '
 
     out_rows = []
-    out_rows += map(to_hex, to_tms9918_rows(sprite_1))
-    out_rows += map(to_hex, to_tms9918_rows(sprite_2))
-    out_rows += map(to_hex, to_tms9918_rows(sprite_3))
-    out_rows += map(to_hex, to_tms9918_rows(sprite_4))
+    out_rows += forth_mapify(to_tms9918_rows(sprite_1))
+    out_rows += forth_mapify(to_tms9918_rows(sprite_2))
+    out_rows += forth_mapify(to_tms9918_rows(sprite_3))
+    out_rows += forth_mapify(to_tms9918_rows(sprite_4))
 
-    assert(len(out_rows) == 32)
+    assert(len(out_rows) == 64)
     
-    buf = buf + ', '.join(out_rows)
+    buf = buf + ', '.join(out_rows) + ', EXIT'
     buf = buf + '\n'
 
 print(buf)
